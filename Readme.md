@@ -1,8 +1,10 @@
-Identificação da turma (ex: EIC1)
+Identificação da turma (ex: EIC2PL)
 
-Identificação do grupo (ex: Grupo 2)
+Identificação do grupo (ex: Grupo 4)
 
-Identificação do número, nome e papel de cada membro do grupo (ex: 12345, José Silva, Scrum Master)
+Identificação do número, nome e papel de cada membro do grupo (ex: 72996, Daniel Coimbra, Scrum Master)
+
+Identificação do número, nome e papel de cada membro do grupo (ex: 73505, Gonçalo Meireles, Developer)
 
 Identificação da variante do projeto desenvolvida (ex: AntiSpamConfigurationForProfessionalMailbox)
 
