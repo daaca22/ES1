@@ -1,4 +1,4 @@
-Identificação da turma (ex: EIC2PL)
+Identificação da turma (ex: EIC2)
 
 Identificação do grupo (ex: Grupo 4)
 
