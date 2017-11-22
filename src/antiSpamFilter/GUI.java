@@ -180,12 +180,13 @@ public class GUI {
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		if (fc.showOpenDialog(search1) == JFileChooser.APPROVE_OPTION) {
 			titleText.setText(fc.getSelectedFile().getAbsolutePath());
-		}
-		if (fc.getSelectedFile().getAbsolutePath() != null) {
-			return fc.getSelectedFile().getAbsolutePath();
 		} else {
-			return null;
+			return " ";
 		}
+		System.out.println(fc.getSelectedFile().getAbsolutePath());
+
+		return fc.getSelectedFile().getAbsolutePath();
+
 	}
 
 	// este método cria um painel dando um botão e um textfield
