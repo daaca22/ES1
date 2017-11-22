@@ -6,12 +6,15 @@ import java.util.List;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 
-public class AntiSpamFilterProblem extends AbstractDoubleProblem {
+public class AntiSpamFilterProblem extends AbstractDoubleProblem {// automatico
 
 	  public AntiSpamFilterProblem() {
 	    // 10 variables (anti-spam filter rules) by default 
+		  // abrir p ficheiro rules.cf e por o numeoro de regras!! ex 300 this(300)
 	    this(10);
+	      
 	  }
+	  // calcular aqui FP e FN nesta classe
 
 	  public AntiSpamFilterProblem(Integer numberOfVariables) {
 	    setNumberOfVariables(numberOfVariables);
@@ -22,7 +25,7 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 	    List<Double> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
 
 	    for (int i = 0; i < getNumberOfVariables(); i++) {
-	      lowerLimit.add(-5.0);
+	      lowerLimit.add(-5.0);// entre -5 e 5 
 	      upperLimit.add(5.0);
 	    }
 
@@ -30,7 +33,7 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 	    setUpperLimit(upperLimit);
 	  }
 
-	  public void evaluate(DoubleSolution solution){
+	  public void evaluate(DoubleSolution solution){// tem de ser executada para cada vector!
 	    double aux, xi, xj;
 	    double[] fx = new double[getNumberOfObjectives()];
 	    double[] x = new double[getNumberOfVariables()];
@@ -42,7 +45,7 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 	    for (int var = 0; var < solution.getNumberOfVariables() - 1; var++) {
 		  fx[0] += Math.abs(x[0]); // Example for testing
 	    }
-	    
+	    // fazer o somatorio aqui e usar a mesma função para o manual! apagar este codigo teste e faer um que some as regras todas
 	    fx[1] = 0.0;
 	    for (int var = 0; var < solution.getNumberOfVariables(); var++) {
 	    	fx[1] += Math.abs(x[1]); // Example for testing
