@@ -2,7 +2,6 @@ package antiSpamFilter;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import java.util.Collections;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-public class GUI extends JComponent {
+public class GUI {
 
 	private JFrame frame = new JFrame("Filtro Anti-Spam");
 	private JList list;
@@ -29,6 +27,9 @@ public class GUI extends JComponent {
 	private String ham;
 	private String rules;
 	private String spam;
+	private ReadFile rf = new ReadFile();
+	private DefaultListModel<String> modelRules = new DefaultListModel<>();
+	private DefaultListModel<String> modelPesos = new DefaultListModel<>();
 
 	public GUI() {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,8 +46,9 @@ public class GUI extends JComponent {
 	}
 
 	public void addFrameContent() {
-		ArrayList<String> listTeste = new ArrayList<String>();
-		Collections.addAll(listTeste, "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str",
+		ArrayList<String> listRules = new ArrayList<String>();
+		ArrayList<String> listPesos = new ArrayList<String>();
+		Collections.addAll(listPesos, "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str",
 				"mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1",
 				"str", "mystr");
 
@@ -95,6 +97,7 @@ public class GUI extends JComponent {
 				// something like: readFiles(give a path);// use this method as much as i want,
 				// or 3 different read files for each file, cause each one has a different stuff
 				// to do in there
+				setModelContent(rf.ReadRules(rules), modelRules);
 			}
 		});
 
@@ -139,8 +142,8 @@ public class GUI extends JComponent {
 		buttons.add(avaliateConfig, BorderLayout.CENTER);
 		buttons.add(results, BorderLayout.SOUTH);
 
-		JPanel listBoxRules = createListBox(listTeste);
-		JPanel listBoxPesos = createListBox(listTeste);
+		JPanel listBoxRules = createListBox(listRules, modelRules);
+		JPanel listBoxPesos = createListBox(listPesos, modelPesos);
 		midPanel.add(listBoxRules, BorderLayout.WEST);
 		listBoxRules.add(listBoxPesos, BorderLayout.EAST);
 		listBoxPesos.add(buttons, BorderLayout.EAST);
@@ -151,22 +154,22 @@ public class GUI extends JComponent {
 
 	}
 
-	private JPanel createListBox(ArrayList<String> listRules) {
-
-		JPanel panel = new JPanel();
+	private JPanel createListBox(ArrayList<String> listRules, DefaultListModel<String> model) {
 		JList list;
-		DefaultListModel<String> model = new DefaultListModel<>();
 		list = new JList<>(model);
 		JScrollPane pane = new JScrollPane(list);
+		JPanel panel = new JPanel();
 		pane.setPreferredSize(new Dimension(100, 170));
-		for (int i = 0; i != listRules.size(); i++) {
-			System.out.println(listRules.get(i));
-			model.addElement(listRules.get(i));
-		}
+		setModelContent(listRules, model);
 		panel.add(pane);
-
 		return panel;
 
+	}
+
+	private void setModelContent(ArrayList<String> listRules, DefaultListModel<String> model) {
+		for (int i = 0; i != listRules.size(); i++) {
+			model.addElement(listRules.get(i));
+		}
 	}
 
 	// devolve o caminho do ficheiro que for selecionado
@@ -217,7 +220,6 @@ public class GUI extends JComponent {
 		subpanelFN.add(subpanelFP, BorderLayout.NORTH);
 
 		return pane;
-
 	}
 
 	public static void main(String[] args) {
