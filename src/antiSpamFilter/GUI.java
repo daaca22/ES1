@@ -48,9 +48,10 @@ public class GUI {
 	public void addFrameContent() {
 		ArrayList<String> listRules = new ArrayList<String>();
 		ArrayList<String> listPesos = new ArrayList<String>();
-		Collections.addAll(listPesos, "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str",
-				"mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1", "str", "mystr", "a1",
-				"str", "mystr");
+		Collections.addAll(listPesos, "0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0",
+				"1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "2.0", "2.1", "2.2", "2.3", "2.4",
+				"2.5", "2.6","2.7", "2.8", "2.4", "2.5", "2.6","2.7", "2.8", "2.9", "3.0", "3.1","3.2", "3.3", "3.4",
+				"3.5", "3.6","3.7", "3.8", "3.9", "4.0", "4.1","4.2", "4.3", "4.4", "4.5", "4.6","4.7", "4.8","4.9","5.0");
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -62,7 +63,6 @@ public class GUI {
 		topPanel.setLayout(new BorderLayout());
 		midPanel.setLayout(new BorderLayout());
 		botPanel.setLayout(new BorderLayout());
-		// topPanel.setPreferredSize( new Dimension( 300, 200 ) );
 		midPanel.setPreferredSize(new Dimension(300, 200));
 		botPanel.setPreferredSize(new Dimension(300, 200));
 
@@ -94,10 +94,22 @@ public class GUI {
 				// verificação se os ficheiros estão escolhidos todos e bem.
 				// Aqui será onde os caminhos serão dados para outro metodo para serem abertos e
 				// lidos.
-				// something like: readFiles(give a path);// use this method as much as i want,
-				// or 3 different read files for each file, cause each one has a different stuff
-				// to do in there
-				setModelContent(rf.ReadRules(rules), modelRules);
+				if (rules != null) {
+					setModelContent(rf.readRules(rules), modelRules);
+				} else {
+					titleText1.setText("No File Selected");
+				}
+				if (ham != null) {
+					rf.readHam(ham);
+				} else {
+					titleText2.setText("No File Selected");
+				}
+				if (spam != null) {
+					rf.readHam(spam);
+				} else {
+					titleText3.setText("No File Selected");
+				}
+
 			}
 		});
 

@@ -9,7 +9,7 @@ public class ReadFile {
 
 	private Scanner scan;
 
-	public ArrayList<String> ReadRules(String file) {
+	public ArrayList<String> readRules(String file) {
 		ArrayList<String> rules = new ArrayList<String>();
 		String s = new String();
 		try {
@@ -28,8 +28,58 @@ public class ReadFile {
 		for (String s1 : rules) {
 			System.out.println(s1);
 		}
-
 		return rules;
+	}
+	
+	public int numberOfRules(String file) {
+		String s = new String();
+		int number = 0;
+		try {
+			scan = new Scanner(new File(file));
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while trying to read file");
+		}
+		System.out.println("teste");
+		while (scan.hasNextLine()) {
+			s = scan.nextLine();
+			number ++;
+		}
+		scan.close();
+
+		return number;
+	}
+
+	public ArrayList<Email> readHam(String file) {
+		ArrayList<Email> mailList = new ArrayList<Email>();
+		String pesos[] = null;
+		Email email = new Email("", pesos);
+		try {
+			scan = new Scanner(new File(file));
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while trying to read file");
+		}
+
+		while (scan.hasNextLine()) {
+			email.setName(scan.next());
+			String currentline = scan.nextLine();
+
+			String[] items = currentline.split(" ");
+			pesos = new String[items.length];
+			System.out.println(email.getName());
+			for (int i = 0; i < items.length; i++) {
+				pesos[i] = items[i];
+				System.out.println(pesos[i]);
+			}
+
+			email.setPesoName(pesos);
+			mailList.add(email);
+
+		}
+
+		scan.close();
+		return mailList;
 	}
 
 	public int numberOfRules(String file) { // este metodo vai contar o numero de regras do ficheiro rules.cf
