@@ -2,11 +2,16 @@ package antiSpamFilter;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,13 +21,18 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 public class GUI {
 
 	private JFrame frame = new JFrame("Filtro Anti-Spam");
 	private JList list;
+	private JList list2;
 	private Dimension dimension;
 	private String ham;
 	private String rules;
@@ -30,6 +40,14 @@ public class GUI {
 	private ReadFile rf = new ReadFile();
 	private DefaultListModel<String> modelRules = new DefaultListModel<>();
 	private DefaultListModel<String> modelPesos = new DefaultListModel<>();
+
+	private DefaultTableModel model1 = new DefaultTableModel();
+
+	private ArrayList<String> listRules = new ArrayList<String>();
+	private ArrayList<Double> listPesos = new ArrayList<Double>();
+
+	private JScrollPane pane;
+	private JScrollPane pane2;
 
 	public GUI() {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -46,12 +64,6 @@ public class GUI {
 	}
 
 	public void addFrameContent() {
-		ArrayList<String> listRules = new ArrayList<String>();
-		ArrayList<String> listPesos = new ArrayList<String>();
-		Collections.addAll(listPesos, "0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0",
-				"1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "2.0", "2.1", "2.2", "2.3", "2.4",
-				"2.5", "2.6","2.7", "2.8", "2.4", "2.5", "2.6","2.7", "2.8", "2.9", "3.0", "3.1","3.2", "3.3", "3.4",
-				"3.5", "3.6","3.7", "3.8", "3.9", "4.0", "4.1","4.2", "4.3", "4.4", "4.5", "4.6","4.7", "4.8","4.9","5.0");
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -87,7 +99,7 @@ public class GUI {
 		topPanel.add(subpanel3, BorderLayout.SOUTH);
 
 		// aqui vai ser criado o botão para informar que estão os caminhos Escolhidos
-		JButton done = new JButton("Paths has been chosen");
+		JButton done = new JButton("Paths have been chosen");
 		subpanel3.add(done, BorderLayout.SOUTH);
 		done.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -95,7 +107,7 @@ public class GUI {
 				// Aqui será onde os caminhos serão dados para outro metodo para serem abertos e
 				// lidos.
 				if (rules != null) {
-					setModelContent(rf.readRules(rules), modelRules);
+					setModelContent(rf.readRules(rules), model1);
 				} else {
 					titleText1.setText("No File Selected");
 				}
@@ -131,14 +143,14 @@ public class GUI {
 		});
 
 		JButton saveConfig = new JButton("Save");
-		saveConfig.setPreferredSize(new Dimension(70, 50));
+		saveConfig.setPreferredSize(new Dimension(20, 30));
 		saveConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// escrever no ficheiro rules.cf
 			}
 		});
 		JButton avaliateConfig = new JButton("Avaliate");
-		avaliateConfig.setPreferredSize(new Dimension(70, 50));
+		avaliateConfig.setPreferredSize(new Dimension(20, 30));
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// chamar a classe para avaliar!
@@ -147,18 +159,36 @@ public class GUI {
 
 		JPanel results = new JPanel();
 		results = setNumberOfFakes(2, 3);// devolver os valores de FP e FN
+		
+		
+		
 
 		JPanel buttons = new JPanel();
-		buttons.setLayout(new BorderLayout());
-		buttons.add(saveConfig, BorderLayout.NORTH);
-		buttons.add(avaliateConfig, BorderLayout.CENTER);
-		buttons.add(results, BorderLayout.SOUTH);
+		buttons.setLayout(new GridLayout(1, 3));
+		//buttons.setPreferredSize(new Dimension(100, 200));
+		buttons.add(saveConfig );
+		buttons.add(avaliateConfig );
+		buttons.add(results );
+		
+		
+		
+		
+		//JTABLE STUFF
+		String[] header = { "Rules", "Pesos" };
+		String[][] data = {};
 
-		JPanel listBoxRules = createListBox(listRules, modelRules);
-		JPanel listBoxPesos = createListBox(listPesos, modelPesos);
-		midPanel.add(listBoxRules, BorderLayout.WEST);
-		listBoxRules.add(listBoxPesos, BorderLayout.EAST);
-		listBoxPesos.add(buttons, BorderLayout.EAST);
+		model1 = new DefaultTableModel(data, header);
+
+		JTable table = new JTable(model1);
+
+		table.setPreferredScrollableViewportSize(new Dimension(180, 150));
+		table.setFillsViewportHeight(true);
+
+		JScrollPane js = new JScrollPane(table);
+		js.setVisible(true);
+
+		midPanel.add(js, BorderLayout.NORTH);
+		midPanel.add(buttons, BorderLayout.SOUTH);
 
 		frame.add(topPanel, BorderLayout.NORTH);
 		frame.add(midPanel, BorderLayout.CENTER);
@@ -166,22 +196,33 @@ public class GUI {
 
 	}
 
-	private JPanel createListBox(ArrayList<String> listRules, DefaultListModel<String> model) {
-		JList list;
-		list = new JList<>(model);
-		JScrollPane pane = new JScrollPane(list);
-		JPanel panel = new JPanel();
-		pane.setPreferredSize(new Dimension(100, 170));
-		setModelContent(listRules, model);
-		panel.add(pane);
-		return panel;
+	private void setModelContent(ArrayList<String> list, DefaultTableModel model) {
+		listRules = list;
+		for (int i = 0; i != list.size(); i++) {
+			model.addRow(new Object[] { list.get(i), setPesos() });
 
+		}
 	}
 
-	private void setModelContent(ArrayList<String> listRules, DefaultListModel<String> model) {
-		for (int i = 0; i != listRules.size(); i++) {
-			model.addElement(listRules.get(i));
-		}
+	private Double setPesos() {
+		ArrayList<Double> listP = new ArrayList<Double>();
+		// DecimalFormat df = new DecimalFormat("#.0000");
+		double randomValue = 0.0;
+		double d = 0.0;
+		Random r = new Random();
+		randomValue = -5 + (5 - (-5)) * r.nextDouble();
+		d = round(randomValue,3);
+		
+		listP.add(d);
+		return d;
+	}
+	
+	public double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 
 	// devolve o caminho do ficheiro que for selecionado

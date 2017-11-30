@@ -8,11 +8,6 @@ import org.uma.jmetal.solution.DoubleSolution;
 
 public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 
-	  public AntiSpamFilterProblem() {
-	    // 10 variables (anti-spam filter rules) by default 
-	    this(10);
-	  }
-	  //ler o ficheiro rules para ver quantos pesos temos(n� de linhas)
 	private ReadFile rf = new ReadFile();
 
 	public AntiSpamFilterProblem() {
