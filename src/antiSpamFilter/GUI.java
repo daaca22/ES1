@@ -252,14 +252,13 @@ public class GUI {
 		for (int i=0; i != listRules.size(); i++) {
 			for (int j=0; j != listPesos.size(); j++) {
 
-				if(listRules.get(i).equals("") ){
+				//if(listRules.get(i).equals("") ){
 				pesos+= listPesos.get(j);
 				System.out.println(pesos);
 				
 				if(pesos>=5){ //spam
 					System.out.println("FP");
-					fp=+fp; 
-					
+					fp=+fp; 			
 					
 				}else{
 					System.out.println("FN");
@@ -267,7 +266,7 @@ public class GUI {
 				}		
 			}
 		}
-	}
+	
 	JPanel resultado = new JPanel();
 	resultado = setNumberOfFakes(fp, fn); //colocar no painel os resultados dos fp e fn (?)
 		
