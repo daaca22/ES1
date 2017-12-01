@@ -26,7 +26,7 @@ public class ReadFile {
 		}
 		scan.close();
 		for (String s1 : rules) {
-			System.out.println(s1);
+			//System.out.println(s1);
 		}
 		return rules;
 	}
@@ -66,10 +66,10 @@ public class ReadFile {
 
 			String[] items = currentline.split(" ");
 			pesos = new String[items.length];// vai ler o primeiro argumento de cada linha
-			System.out.println(email.getName());
+			//System.out.println(email.getName());
 			for (int i = 0; i < items.length; i++) {
 				pesos[i] = items[i];// vai adicionar todos os pesos de cada linha a este vector
-				System.out.println(pesos[i]);
+				//System.out.println(pesos[i]);
 			}
 
 			email.setPesoName(pesos);

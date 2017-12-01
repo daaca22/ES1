@@ -38,8 +38,7 @@ public class GUI {
 	private String rules;
 	private String spam;
 	private ReadFile rf = new ReadFile();
-	private DefaultListModel<String> modelRules = new DefaultListModel<>();
-	private DefaultListModel<String> modelPesos = new DefaultListModel<>();
+ 
 
 	private DefaultTableModel model1 = new DefaultTableModel();
 
@@ -113,6 +112,7 @@ public class GUI {
 				}
 				if (ham != null) {
 					rf.readHam(ham);
+					//FPFN();
 				} else {
 					titleText2.setText("No File Selected");
 				}
@@ -158,7 +158,7 @@ public class GUI {
 		});
 
 		JPanel results = new JPanel();
-		results = setNumberOfFakes(2, 3);// devolver os valores de FP e FN
+		//results = setNumberOfFakes(2, 3);// devolver os valores de FP e FN
 		
 		
 		
@@ -204,8 +204,8 @@ public class GUI {
 		}
 	}
 
-	private Double setPesos() {
-		ArrayList<Double> listP = new ArrayList<Double>();
+	private Double setPesos() {// apos carregar os caminhos
+ 
 		// DecimalFormat df = new DecimalFormat("#.0000");
 		double randomValue = 0.0;
 		double d = 0.0;
@@ -213,7 +213,7 @@ public class GUI {
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
 		d = round(randomValue,3);
 		
-		listP.add(d);
+		listPesos.add(d);
 		return d;
 	}
 	
@@ -236,11 +236,45 @@ public class GUI {
 		} else {
 			return " ";
 		}
-		System.out.println(fc.getSelectedFile().getAbsolutePath());
+		//System.out.println(fc.getSelectedFile().getAbsolutePath());
 
 		return fc.getSelectedFile().getAbsolutePath();
 
 	}
+	
+	
+	private void FPFN(){
+		
+		int pesos=0;
+		int fn=0;//contador dos falsos negativos
+		int fp=0; //contador dos falsos positivos
+
+		for (int i=0; i != listRules.size(); i++) {
+			for (int j=0; j != listPesos.size(); j++) {
+
+				if(listRules.get(i).equals("") ){
+				pesos+= listPesos.get(j);
+				System.out.println(pesos);
+				
+				if(pesos>=5){ //spam
+					System.out.println("FP");
+					fp=+fp; 
+					
+					
+				}else{
+					System.out.println("FN");
+					fn=+fn;
+				}		
+			}
+		}
+	}
+	JPanel resultado = new JPanel();
+	resultado = setNumberOfFakes(fp, fn); //colocar no painel os resultados dos fp e fn (?)
+		
+	
+	
+	}
+	
 
 	// este método cria um painel dando um botão e um textfield
 	private JPanel getPanel(JButton search, JTextField titleText) {
@@ -253,6 +287,7 @@ public class GUI {
 		return subpanel;
 	}
 
+	
 	public JPanel setNumberOfFakes(int fpResult, int fnResult) {
 		String fpString = Integer.toString(fpResult);
 		String fnString = Integer.toString(fnResult);
