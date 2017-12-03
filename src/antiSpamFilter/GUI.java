@@ -247,7 +247,8 @@ public class GUI {
 		
 		double pesos=0;
 		int fn=0; //contador dos falsos negativos
-		int fp=0; //contador dos falsos positivos
+		int
+		fp=0; //contador dos falsos positivos
 
 		for (int i=0; i != listRules.size(); i++) {
 			for (int j=0; j != listPesos.size(); j++) {
