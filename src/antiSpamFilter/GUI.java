@@ -112,7 +112,7 @@ public class GUI {
 				}
 				if (ham != null) {
 					rf.readHam(ham);
-					//FPFN();
+					FPFN();
 				} else {
 					titleText2.setText("No File Selected");
 				}
@@ -245,8 +245,8 @@ public class GUI {
 	
 	private void FPFN(){
 		
-		int pesos=0;
-		int fn=0;//contador dos falsos negativos
+		double pesos=0;
+		int fn=0; //contador dos falsos negativos
 		int fp=0; //contador dos falsos positivos
 
 		for (int i=0; i != listRules.size(); i++) {
@@ -257,19 +257,19 @@ public class GUI {
 				System.out.println(pesos);
 				
 				if(pesos>=5){ //spam
-					System.out.println("FP");
-					fp=+fp; 			
+					//System.out.println("FP");
+					fp=fp+1; 			
 					
 				}else{
-					System.out.println("FN");
-					fn=+fn;
+					//System.out.println("FN");
+					fn=fn+1;
 				}		
 			}
 		}
 	
 	JPanel resultado = new JPanel();
 	resultado = setNumberOfFakes(fp, fn); //colocar no painel os resultados dos fp e fn (?)
-		
+	System.out.println("fn: "+ fn + "fp: "+ fp);
 	
 	
 	}
