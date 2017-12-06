@@ -121,7 +121,6 @@ public class GUI {
 				} else {
 					titleText3.setText("No File Selected");
 				}
-
 			}
 		});
 
@@ -159,21 +158,15 @@ public class GUI {
 
 		JPanel results = new JPanel();
 		results = setNumberOfFakes(2, 3);// devolver os valores de FP e FN
-		
-		
-		
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
-		//buttons.setPreferredSize(new Dimension(100, 200));
-		buttons.add(saveConfig );
-		buttons.add(avaliateConfig );
-		buttons.add(results );
-		
-		
-		
-		
-		//JTABLE STUFF
+		// buttons.setPreferredSize(new Dimension(100, 200));
+		buttons.add(saveConfig);
+		buttons.add(avaliateConfig);
+		buttons.add(results);
+
+		// JTABLE STUFF
 		String[] header = { "Rules", "Pesos" };
 		String[][] data = {};
 
@@ -211,18 +204,19 @@ public class GUI {
 		double d = 0.0;
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
-		d = round(randomValue,3);
-		
+		d = round(randomValue, 3);
+
 		listP.add(d);
 		return d;
 	}
-	
-	public double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
 
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	public double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	// devolve o caminho do ficheiro que for selecionado
