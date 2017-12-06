@@ -16,6 +16,7 @@ public class TestCase {
 		assertTrue(regras == 335);
 		ArrayList<String> readRules= rf.readRules("/Users/Utilizador/universidade/3ºAno/ES/rules.cf");
 		//assertTrue(readRules==);
+		ArrayList<Email> readHam= rf.readHam("/Users/Utilizador/universidade/3ºAno/ES/rules.cf");
 		
 		
 	}
