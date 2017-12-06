@@ -8,12 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -24,8 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class GUI {
@@ -38,7 +33,6 @@ public class GUI {
 	private String rules;
 	private String spam;
 	private ReadFile rf = new ReadFile();
- 
 
 	private DefaultTableModel model1 = new DefaultTableModel();
 
@@ -112,7 +106,6 @@ public class GUI {
 				}
 				if (ham != null) {
 					rf.readHam(ham);
-					FPFN();
 				} else {
 					titleText2.setText("No File Selected");
 				}
@@ -153,6 +146,7 @@ public class GUI {
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// chamar a classe para avaliar!
+				calculateFpFn();
 			}
 		});
 
@@ -192,20 +186,19 @@ public class GUI {
 	private void setModelContent(ArrayList<String> list, DefaultTableModel model) {
 		listRules = list;
 		for (int i = 0; i != list.size(); i++) {
-			model.addRow(new Object[] { list.get(i), setPesos() });
-
+			model.addRow(new Object[] { list.get(i), setPesos() });  
 		}
 	}
 
 	private Double setPesos() {// apos carregar os caminhos
- 
+
 		// DecimalFormat df = new DecimalFormat("#.0000");
 		double randomValue = 0.0;
 		double d = 0.0;
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
-		d = round(randomValue,3);
-		
+		d = round(randomValue, 3);
+
 		listPesos.add(d);
 		return d;
 	}
@@ -230,45 +223,41 @@ public class GUI {
 		} else {
 			return " ";
 		}
-		//System.out.println(fc.getSelectedFile().getAbsolutePath());
+		// System.out.println(fc.getSelectedFile().getAbsolutePath());
 
 		return fc.getSelectedFile().getAbsolutePath();
 
 	}
-	
-	
-	private void FPFN(){
-		
-		double pesos=0;
-		int fn=0; //contador dos falsos negativos
-		int
-		fp=0; //contador dos falsos positivos
 
-		for (int i=0; i != listRules.size(); i++) {
-			for (int j=0; j != listPesos.size(); j++) {
+	private void calculateFpFn() {
 
-				//if(listRules.get(i).equals("") ){
-				pesos+= listPesos.get(j);
+		double pesos = 0;
+		int fn = 0; // contador dos falsos negativos
+		int fp = 0; // contador dos falsos positivos
+
+		for (int i = 0; i != listRules.size(); i++) {
+			for (int j = 0; j != listPesos.size(); j++) {
+
+				// if(listRules.get(i).equals("") ){
+				pesos += listPesos.get(j);
 				System.out.println(pesos);
-				
-				if(pesos>=5){ //spam
-					//System.out.println("FP");
-					fp=fp+1; 			
-					
-				}else{
-					//System.out.println("FN");
-					fn=fn+1;
-				}		
+
+				if (pesos >= 5) { // spam
+					// System.out.println("FP");
+					fp = fp + 1;
+
+				} else {
+					// System.out.println("FN");
+					fn = fn + 1;
+				}
 			}
 		}
-	
-	JPanel resultado = new JPanel();
-	resultado = setNumberOfFakes(fp, fn); //colocar no painel os resultados dos fp e fn (?)
-	System.out.println("fn: "+ fn + "fp: "+ fp);
-	
-	
+
+		
+		setNumberOfFakes(fp, fn); // colocar no painel os resultados dos fp e fn (?)
+		System.out.println("fn: " + fn + "fp: " + fp);
+
 	}
-	
 
 	// este método cria um painel dando um botão e um textfield
 	private JPanel getPanel(JButton search, JTextField titleText) {
@@ -281,7 +270,6 @@ public class GUI {
 		return subpanel;
 	}
 
-	
 	public JPanel setNumberOfFakes(int fpResult, int fnResult) {
 		String fpString = Integer.toString(fpResult);
 		String fnString = Integer.toString(fnResult);
