@@ -26,13 +26,14 @@ public class ReadFile {
 		}
 		scan.close();
 		for (String s1 : rules) {
-			//System.out.println(s1);
+			// System.out.println(s1);
 		}
 		return rules;
 	}
+
 	public int numberOfRules(String file) { // este metodo vai contar o numero de regras do ficheiro rules.cf
 		String s = new String();
-		int number = 0; //contador
+		int number = 0; // contador
 		try {
 			scan = new Scanner(new File(file));
 
@@ -42,7 +43,7 @@ public class ReadFile {
 		System.out.println("teste");
 		while (scan.hasNextLine()) {// l� linha a linha
 			s = scan.nextLine();
-			number ++;
+			number++;
 		}
 		scan.close();
 
@@ -52,7 +53,6 @@ public class ReadFile {
 	public ArrayList<Email> readHam(String file) { // recebe o caminho para o ham.log ou spam.log
 		ArrayList<Email> mailList = new ArrayList<Email>();// cria uma lista de mails
 		String pesos[] = null;
-		Email email = new Email("", pesos);
 		try {
 			scan = new Scanner(new File(file));
 
@@ -61,26 +61,30 @@ public class ReadFile {
 		}
 
 		while (scan.hasNextLine()) {
+			Email email = new Email("", pesos);
 			email.setName(scan.next());
+			
 			String currentline = scan.nextLine();
-
-			String[] items = currentline.split(" ");
+			String[] items = currentline.split("	");
+			
 			pesos = new String[items.length];// vai ler o primeiro argumento de cada linha
-			//System.out.println(email.getName());
-			for (int i = 0; i < items.length; i++) {
-				pesos[i] = items[i];// vai adicionar todos os pesos de cada linha a este vector
-				//System.out.println(pesos[i]);
-			}
+			pesos = removeElement(items, 0);
 
-			email.setPesoName(pesos);
+			email.setValues(pesos);
 			mailList.add(email);
 
 		}
 
 		scan.close();
+ 
 		return mailList;
 	}
 
-	
-	
+	public String[] removeElement(String[] original, int element) {
+		String[] n = new String[original.length - 1];
+		System.arraycopy(original, 0, n, 0, element);
+		System.arraycopy(original, element + 1, n, element, original.length - element - 1);
+		return n;
+	}
+
 }

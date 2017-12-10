@@ -2,38 +2,28 @@ package antiSpamFilter;
 
 public class Email {
 
-
 	private String name;
-	private String[] pesoName;
-	
-	
-	public Email(String name, String[] pesoName) {
-		this.name = name;
-		this.pesoName = pesoName;
-	}
+	private String[] values;
 
+	public Email(String name, String[] values) {
+		this.name = name;
+		this.values = values;
+	}
 
 	public String getName() {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
-	public String[] getPesoName() {
-		return pesoName;
+	public String[] getValues() {
+		return values;
 	}
 
-
-	public void setPesoName(String[] pesoName) {
-		this.pesoName = pesoName;
+	public void setValues(String[] values) {
+		this.values = values;
 	}
-	
-	
 
-	
-	
 }

@@ -12,12 +12,11 @@ public class TestCase {
 	public final void test() {
 		//fail("Not yet implemented"); // TODO
 		ReadFile rf = new ReadFile();
-		int regras = rf.numberOfRules("/Users/Utilizador/universidade/3ºAno/ES/rules.cf");
+		int regras = rf.numberOfRules("/Users/danielcoimbra/Desktop/ES/rules.cf");
 		assertTrue(regras == 335);
-		ArrayList<String> readRules= rf.readRules("/Users/Utilizador/universidade/3ºAno/ES/rules.cf");
+		ArrayList<String> readRules= rf.readRules("/Users/danielcoimbra/Desktop/ES/rules.cf");
 		//assertTrue(readRules==);
-		ArrayList<Email> readHam= rf.readHam("/Users/Utilizador/universidade/3ºAno/ES/rules.cf");
-		
+		ArrayList<Email> readHams= rf.readHam("/Users/danielcoimbra/Desktop/ES/rules.cf");
 		
 	}
 

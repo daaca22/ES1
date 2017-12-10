@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -26,8 +25,6 @@ import javax.swing.table.DefaultTableModel;
 public class GUI {
 
 	private JFrame frame = new JFrame("Filtro Anti-Spam");
-	private JList list;
-	private JList list2;
 	private Dimension dimension;
 	private String ham;
 	private String rules;
@@ -36,11 +33,11 @@ public class GUI {
 
 	private DefaultTableModel model1 = new DefaultTableModel();
 
-	private ArrayList<String> listRules = new ArrayList<String>();
-	private ArrayList<Double> listPesos = new ArrayList<Double>();
-
-	private JScrollPane pane;
-	private JScrollPane pane2;
+	private ArrayList<String> listRulesName = new ArrayList<String>();
+	private ArrayList<Rule> listRules = new ArrayList<Rule>();
+	
+	private ArrayList<Email> listHam = new ArrayList<Email>();
+	private ArrayList<Email> listSpam = new ArrayList<Email>();
 
 	public GUI() {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -100,17 +97,18 @@ public class GUI {
 				// Aqui será onde os caminhos serão dados para outro metodo para serem abertos e
 				// lidos.
 				if (rules != null) {
-					setModelContent(rf.readRules(rules), model1);
+					setModelContent(rf.readRules(rules), model1);// vai carregar as regras na GUI
 				} else {
 					titleText1.setText("No File Selected");
 				}
 				if (ham != null) {
-					rf.readHam(ham);
+					listHam = rf.readHam(ham);
 				} else {
 					titleText2.setText("No File Selected");
 				}
 				if (spam != null) {
-					rf.readHam(spam);
+					listSpam = rf.readHam(spam);
+					System.out.println(listSpam.size());
 				} else {
 					titleText3.setText("No File Selected");
 				}
@@ -146,7 +144,9 @@ public class GUI {
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// chamar a classe para avaliar!
-				calculateFpFn();
+				// calculateFpFn();
+
+				listRules = getRulesList(model1); // tenho aqui a lista de Regras que têm o nome e o peso
 			}
 		});
 
@@ -184,13 +184,13 @@ public class GUI {
 	}
 
 	private void setModelContent(ArrayList<String> list, DefaultTableModel model) {
-		listRules = list;
+		listRulesName = list;
 		for (int i = 0; i != list.size(); i++) {
-			model.addRow(new Object[] { list.get(i), setPesos() });  
+			model.addRow(new Object[] { list.get(i), setPesos() });
 		}
 	}
 
-	private Double setPesos() {// apos carregar os caminhos
+	private Double setPesos() {// apos carregar os caminhos carrega pesos aleatorios
 
 		// DecimalFormat df = new DecimalFormat("#.0000");
 		double randomValue = 0.0;
@@ -198,9 +198,29 @@ public class GUI {
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
 		d = round(randomValue, 3);
-
-		listPesos.add(d);
 		return d;
+	}
+
+	private ArrayList<Rule> createRules(ArrayList<Double> pesos) {
+		ArrayList<Rule> rulesList = new ArrayList<Rule>();
+		for (int i = 0; i != pesos.size(); i++) {
+			Rule rule = new Rule(listRulesName.get(i), pesos.get(i));
+			rulesList.add(rule);
+			System.out.println(rule.getRule() + " " + rule.getValue());
+		}
+		
+		return rulesList;
+	}
+
+	private ArrayList<Rule> getRulesList(DefaultTableModel model) {
+		
+		ArrayList<Rule> rulesList = new ArrayList<Rule>();
+		ArrayList<Double> pesos = new ArrayList<Double>();
+		for (int count = 0; count < model.getRowCount(); count++) {
+			pesos.add(Double.parseDouble(model.getValueAt(count, 1).toString()));
+		}
+		rulesList = createRules(pesos);
+		return rulesList;
 	}
 
 	public double round(double value, int places) {
@@ -228,36 +248,36 @@ public class GUI {
 		return fc.getSelectedFile().getAbsolutePath();
 
 	}
+	
 
-	private void calculateFpFn() {
-
-		double pesos = 0;
-		int fn = 0; // contador dos falsos negativos
-		int fp = 0; // contador dos falsos positivos
-
-		for (int i = 0; i != listRules.size(); i++) {
-			for (int j = 0; j != listPesos.size(); j++) {
-
-				// if(listRules.get(i).equals("") ){
-				pesos += listPesos.get(j);
-				System.out.println(pesos);
-
-				if (pesos >= 5) { // spam
-					// System.out.println("FP");
-					fp = fp + 1;
-
-				} else {
-					// System.out.println("FN");
-					fn = fn + 1;
-				}
-			}
-		}
-
-		
-		setNumberOfFakes(fp, fn); // colocar no painel os resultados dos fp e fn (?)
-		System.out.println("fn: " + fn + "fp: " + fp);
-
-	}
+//	private void calculateFpFn() {
+//
+//		double pesos = 0;
+//		int fn = 0; // contador dos falsos negativos
+//		int fp = 0; // contador dos falsos positivos
+//
+//		for (int i = 0; i != listRulesName.size(); i++) {
+//			for (int j = 0; j != listPesos.size(); j++) {
+//
+//				// if(listRules.get(i).equals("") ){
+//				pesos += listPesos.get(j);
+//				System.out.println(pesos);
+//
+//				if (pesos >= 5) { // spam
+//					// System.out.println("FP");
+//					fp = fp + 1;
+//
+//				} else {
+//					// System.out.println("FN");
+//					fn = fn + 1;
+//				}
+//			}
+//		}
+//
+//		setNumberOfFakes(fp, fn); // colocar no painel os resultados dos fp e fn (?)
+//		System.out.println("fn: " + fn + "fp: " + fp);
+//
+//	}
 
 	// este método cria um painel dando um botão e um textfield
 	private JPanel getPanel(JButton search, JTextField titleText) {
