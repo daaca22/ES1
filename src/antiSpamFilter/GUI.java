@@ -35,7 +35,7 @@ public class GUI {
 
 	private ArrayList<String> listRulesName = new ArrayList<String>();
 	private ArrayList<Rule> listRules = new ArrayList<Rule>();
-	
+
 	private ArrayList<Email> listHam = new ArrayList<Email>();
 	private ArrayList<Email> listSpam = new ArrayList<Email>();
 
@@ -136,22 +136,27 @@ public class GUI {
 		saveConfig.setPreferredSize(new Dimension(20, 30));
 		saveConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// escrever no ficheiro rules.cf
+				rf.writeRules("lol", listRules);
 			}
 		});
+		JPanel results = new JPanel();
+		JTextField fpText = new JTextField("             ");
+		JTextField fnText = new JTextField("             ");
+		results = numberOfFakesTextFields(fpText, fnText);
+
 		JButton avaliateConfig = new JButton("Avaliate");
 		avaliateConfig.setPreferredSize(new Dimension(20, 30));
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// chamar a classe para avaliar!
-				// calculateFpFn();
+				listRules = getRulesList(model1); // lista de Regras que têm o nome e o peso
 
-				listRules = getRulesList(model1); // tenho aqui a lista de Regras que têm o nome e o peso
+				String fpString = Integer.toString(calculateFP(listHam));
+				String fnString = Integer.toString(calculateFN(listSpam));
+				fpText.setText(fpString);
+				fnText.setText(fnString);
 			}
 		});
-
-		JPanel results = new JPanel();
-		results = setNumberOfFakes(2, 3);// devolver os valores de FP e FN
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
@@ -191,8 +196,6 @@ public class GUI {
 	}
 
 	private Double setPesos() {// apos carregar os caminhos carrega pesos aleatorios
-
-		// DecimalFormat df = new DecimalFormat("#.0000");
 		double randomValue = 0.0;
 		double d = 0.0;
 		Random r = new Random();
@@ -208,12 +211,12 @@ public class GUI {
 			rulesList.add(rule);
 			System.out.println(rule.getRule() + " " + rule.getValue());
 		}
-		
+
 		return rulesList;
 	}
 
 	private ArrayList<Rule> getRulesList(DefaultTableModel model) {
-		
+
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
 		ArrayList<Double> pesos = new ArrayList<Double>();
 		for (int count = 0; count < model.getRowCount(); count++) {
@@ -248,36 +251,51 @@ public class GUI {
 		return fc.getSelectedFile().getAbsolutePath();
 
 	}
-	
 
-//	private void calculateFpFn() {
-//
-//		double pesos = 0;
-//		int fn = 0; // contador dos falsos negativos
-//		int fp = 0; // contador dos falsos positivos
-//
-//		for (int i = 0; i != listRulesName.size(); i++) {
-//			for (int j = 0; j != listPesos.size(); j++) {
-//
-//				// if(listRules.get(i).equals("") ){
-//				pesos += listPesos.get(j);
-//				System.out.println(pesos);
-//
-//				if (pesos >= 5) { // spam
-//					// System.out.println("FP");
-//					fp = fp + 1;
-//
-//				} else {
-//					// System.out.println("FN");
-//					fn = fn + 1;
-//				}
-//			}
-//		}
-//
-//		setNumberOfFakes(fp, fn); // colocar no painel os resultados dos fp e fn (?)
-//		System.out.println("fn: " + fn + "fp: " + fp);
-//
-//	}
+	// calcular o numero de FP ao percorrer a lista com os emails de ham.log
+	private int calculateFP(ArrayList<Email> hamList) {
+		int fp = 0;
+		for (Email email : hamList) {
+			if (isSpam(email.getValues()))
+				fp++;
+		}
+		return fp;
+	}
+
+	// calcular o numero de FN ao percorrer a lista com os emails de spam.log
+	private int calculateFN(ArrayList<Email> spamList) {
+		int fn = 0;
+		for (Email email : spamList) {
+			if (!isSpam(email.getValues()))
+				fn++;
+		}
+		return fn;
+	}
+
+	// este metodo vê se está acima ou abaixo de 5
+	private Boolean isSpam(String[] rules) {
+		Double d = 0.0;
+		for (int i = 0; i != rules.length; i++) {
+			d = d + getPeso(rules[i]);
+		}
+		if (d > 5) {
+			return true;
+		}
+		return false;
+	}
+
+	// este metodo percorre a lista de Regras(classe Rule) e vai buscar o peso de
+	// cada Regra para somar no metodo anterior
+	private Double getPeso(String rule) {
+		Double d = 0.0;
+		for (Rule r : listRules) {
+			if (r.getRule().equals(rule)) {
+				d = r.getValue();
+			}
+		}
+
+		return d;
+	}
 
 	// este método cria um painel dando um botão e um textfield
 	private JPanel getPanel(JButton search, JTextField titleText) {
@@ -290,9 +308,7 @@ public class GUI {
 		return subpanel;
 	}
 
-	public JPanel setNumberOfFakes(int fpResult, int fnResult) {
-		String fpString = Integer.toString(fpResult);
-		String fnString = Integer.toString(fnResult);
+	public JPanel numberOfFakesTextFields(JTextField fpText, JTextField fnText) {
 		JPanel pane = new JPanel();
 		JPanel subpanelFN = new JPanel();
 		JPanel subpanelFP = new JPanel();
@@ -301,23 +317,18 @@ public class GUI {
 		subpanelFN.setLayout(new BorderLayout());
 		JLabel fp = new JLabel("FP:");
 		JLabel fn = new JLabel("FN:");
-		JTextField fpText = new JTextField(fpString);
-		JTextField fnText = new JTextField(fnString);
 		subpanelFN.add(fn, BorderLayout.WEST);
 		subpanelFN.add(fnText, BorderLayout.EAST);
 		subpanelFP.add(fp, BorderLayout.WEST);
 		subpanelFP.add(fpText, BorderLayout.EAST);
 		pane.add(subpanelFN, BorderLayout.WEST);
 		subpanelFN.add(subpanelFP, BorderLayout.NORTH);
-
 		return pane;
 	}
 
 	public static void main(String[] args) {
-
 		GUI window = new GUI();
 		window.open(300, 600);
-
 	}
 
 }

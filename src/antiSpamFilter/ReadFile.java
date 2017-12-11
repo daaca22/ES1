@@ -1,7 +1,10 @@
 package antiSpamFilter;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -63,10 +66,10 @@ public class ReadFile {
 		while (scan.hasNextLine()) {
 			Email email = new Email("", pesos);
 			email.setName(scan.next());
-			
+
 			String currentline = scan.nextLine();
 			String[] items = currentline.split("	");
-			
+
 			pesos = new String[items.length];// vai ler o primeiro argumento de cada linha
 			pesos = removeElement(items, 0);
 
@@ -76,15 +79,45 @@ public class ReadFile {
 		}
 
 		scan.close();
- 
+
 		return mailList;
 	}
 
-	public String[] removeElement(String[] original, int element) {
+	private String[] removeElement(String[] original, int element) {
 		String[] n = new String[original.length - 1];
 		System.arraycopy(original, 0, n, 0, element);
 		System.arraycopy(original, element + 1, n, element, original.length - element - 1);
 		return n;
+	}
+
+	public void writeRules(String file, ArrayList<Rule> listRules) {
+
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter("/Users/danielcoimbra/Desktop/rules.rtf");
+			bw = new BufferedWriter(fw);
+
+			for (Rule r : listRules) {
+				bw.write(r.getRule() + " " + r.getValue());
+				bw.newLine();
+			}
+
+			System.out.println("Done");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+				if (fw != null)
+					fw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
+		}
+
 	}
 
 }
