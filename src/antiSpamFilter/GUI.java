@@ -195,7 +195,7 @@ public class GUI {
 		}
 	}
 
-	private Double setPesos() {// apos carregar os caminhos carrega pesos aleatorios
+	public Double setPesos() {// apos carregar os caminhos carrega pesos aleatorios
 		double randomValue = 0.0;
 		double d = 0.0;
 		Random r = new Random();
@@ -204,7 +204,7 @@ public class GUI {
 		return d;
 	}
 
-	private ArrayList<Rule> createRules(ArrayList<Double> pesos) {
+	public ArrayList<Rule> createRules(ArrayList<Double> pesos) {
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
 		for (int i = 0; i != pesos.size(); i++) {
 			Rule rule = new Rule(listRulesName.get(i), pesos.get(i));
@@ -253,7 +253,7 @@ public class GUI {
 	}
 
 	// calcular o numero de FP ao percorrer a lista com os emails de ham.log
-	private int calculateFP(ArrayList<Email> hamList) {
+	public int calculateFP(ArrayList<Email> hamList) {
 		int fp = 0;
 		for (Email email : hamList) {
 			if (isSpam(email.getValues()))
@@ -263,7 +263,7 @@ public class GUI {
 	}
 
 	// calcular o numero de FN ao percorrer a lista com os emails de spam.log
-	private int calculateFN(ArrayList<Email> spamList) {
+	public int calculateFN(ArrayList<Email> spamList) {
 		int fn = 0;
 		for (Email email : spamList) {
 			if (!isSpam(email.getValues()))
@@ -286,7 +286,7 @@ public class GUI {
 
 	// este metodo percorre a lista de Regras(classe Rule) e vai buscar o peso de
 	// cada Regra para somar no metodo anterior
-	private Double getPeso(String rule) {
+	public Double getPeso(String rule) {
 		Double d = 0.0;
 		for (Rule r : listRules) {
 			if (r.getRule().equals(rule)) {

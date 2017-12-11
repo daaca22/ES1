@@ -95,7 +95,7 @@ public class ReadFile {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
-			fw = new FileWriter("/Users/danielcoimbra/Desktop/rules.rtf");
+			fw = new FileWriter("/Users/danielcoimbra/Desktop/rules.txt");
 			bw = new BufferedWriter(fw);
 
 			for (Rule r : listRules) {

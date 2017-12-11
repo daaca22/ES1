@@ -14,17 +14,9 @@ public class Rule {
 	public String getRule() {
 		return rule;
 	}
-
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
-
 	public Double getValue() {
 		return value;
 	}
 
-	public void setValue(Double value) {
-		this.value = value;
-	}
-
+ 
 }
