@@ -1,15 +1,15 @@
 package antiSpamFilter;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -31,9 +31,9 @@ public class GUI {
 	private String spam;
 	private ReadFile rf = new ReadFile();
 
-	private DefaultTableModel model1 = new DefaultTableModel();
+	private DefaultTableModel modelManual = new DefaultTableModel();
+	private DefaultTableModel modelAutomatic = new DefaultTableModel();
 
-	private ArrayList<String> listRulesName = new ArrayList<String>();
 	private ArrayList<Rule> listRules = new ArrayList<Rule>();
 
 	private ArrayList<Email> listHam = new ArrayList<Email>();
@@ -55,18 +55,16 @@ public class GUI {
 
 	public void addFrameContent() {
 
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
 		// Aqui são criados 3 os paineis principais.
 		JPanel topPanel = new JPanel();
 		JPanel midPanel = new JPanel();
 		JPanel botPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		midPanel.setLayout(new BorderLayout());
-		botPanel.setLayout(new BorderLayout());
-		midPanel.setPreferredSize(new Dimension(300, 200));
-		botPanel.setPreferredSize(new Dimension(300, 200));
+		topPanel.setLayout(new GridLayout(3, 1));
+		midPanel.setLayout(new FlowLayout());
+		botPanel.setLayout(new FlowLayout());
+		topPanel.setPreferredSize(new Dimension(400, 100));
+		midPanel.setPreferredSize(new Dimension(400, 300));
+		botPanel.setPreferredSize(new Dimension(400, 300));
 
 		// aqui são criados os botoes para procurar o caminho dos ficheiros
 		JButton search1 = new JButton("Search");
@@ -82,53 +80,64 @@ public class GUI {
 		JPanel subpanel = getPanel(search1, titleText1);
 		JPanel subpanel2 = getPanel(search2, titleText2);
 		JPanel subpanel3 = getPanel(search3, titleText3);
+		
+		// Label de interação com o utilizador
+		
+		JLabel mensageLabel = new JLabel("");
+		mensageLabel.setFont(new Font("Verdana", Font.BOLD, 15));
+		mensageLabel.setForeground(Color.RED);
 
 		// aqui são colocados por ordem os subpaineis, no primeiro painel, dos caminhos.
-		topPanel.add(subpanel, BorderLayout.NORTH);
-		topPanel.add(subpanel2, BorderLayout.CENTER);
-		topPanel.add(subpanel3, BorderLayout.SOUTH);
+		topPanel.add(subpanel);
+		topPanel.add(subpanel2);
+		topPanel.add(subpanel3);
 
 		// aqui vai ser criado o botão para informar que estão os caminhos Escolhidos
-		JButton done = new JButton("Paths have been chosen");
-		subpanel3.add(done, BorderLayout.SOUTH);
-		done.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// verificação se os ficheiros estão escolhidos todos e bem.
-				// Aqui será onde os caminhos serão dados para outro metodo para serem abertos e
-				// lidos.
-				if (rules != null) {
-					setModelContent(rf.readRules(rules), model1);// vai carregar as regras na GUI
-				} else {
-					titleText1.setText("No File Selected");
-				}
-				if (ham != null) {
-					listHam = rf.readHam(ham);
-				} else {
-					titleText2.setText("No File Selected");
-				}
-				if (spam != null) {
-					listSpam = rf.readHam(spam);
-					System.out.println(listSpam.size());
-				} else {
-					titleText3.setText("No File Selected");
-				}
-			}
-		});
 
 		search1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rules = getPath(search1, titleText1);
+				if (rules.endsWith("rules.cf")) {
+					if (rules != null) {
+						setModelContent(rf.readRules(rules), modelManual);// vai carregar as regras na GUI
+					} else {
+						titleText1.setText("No File Selected");
+					}
+				} else {
+					titleText1.setText("Wrong File");
+				}
 			}
 		});
 
 		search2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ham = getPath(search2, titleText2);
+				if (ham.endsWith("ham.log.txt")) {
+					if (ham != null) {
+						listHam = rf.readHamOrSpam(ham);
+						mensageLabel.setText("Ficheiro foi Carregado com Sucesso!");
+					} else {
+						titleText2.setText("No File Selected");
+					}
+				} else {
+					titleText2.setText("Wrong File");
+				}
 			}
 		});
 		search3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				spam = getPath(search3, titleText3);
+				if (spam.endsWith("spam.log.txt")) {
+					if (spam != null) {
+						listSpam = rf.readHamOrSpam(spam);
+						System.out.println(listSpam.size());
+						mensageLabel.setText("Ficheiro foi Carregado com Sucesso!");
+					} else {
+						titleText3.setText("No File Selected");
+					}
+				} else {
+					titleText2.setText("Wrong File");
+				}
 			}
 		});
 
@@ -136,7 +145,9 @@ public class GUI {
 		saveConfig.setPreferredSize(new Dimension(20, 30));
 		saveConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				rf.writeRules("lol", listRules);
+				listRules = getRulesList(modelManual);
+				rf.writeRules(rules, listRules);
+				mensageLabel.setText("Ficheiro foi Guardado com Sucesso!");
 			}
 		});
 		JPanel results = new JPanel();
@@ -148,13 +159,13 @@ public class GUI {
 		avaliateConfig.setPreferredSize(new Dimension(20, 30));
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// chamar a classe para avaliar!
-				listRules = getRulesList(model1); // lista de Regras que têm o nome e o peso
+				listRules = getRulesList(modelManual); // lista de Regras que têm o nome e o peso
 
 				String fpString = Integer.toString(calculateFP(listHam));
 				String fnString = Integer.toString(calculateFN(listSpam));
 				fpText.setText(fpString);
 				fnText.setText(fnString);
+				mensageLabel.setText("Ficheiro foi Avaliado com Sucesso!");
 			}
 		});
 
@@ -169,70 +180,96 @@ public class GUI {
 		String[] header = { "Rules", "Pesos" };
 		String[][] data = {};
 
-		model1 = new DefaultTableModel(data, header);
+		modelManual = new DefaultTableModel(data, header);
 
-		JTable table = new JTable(model1);
+		JTable table = new JTable(modelManual);
 
 		table.setPreferredScrollableViewportSize(new Dimension(180, 150));
 		table.setFillsViewportHeight(true);
 
 		JScrollPane js = new JScrollPane(table);
 		js.setVisible(true);
+		js.setPreferredSize(new Dimension(400, 200));
+		buttons.setPreferredSize(new Dimension(400, 50));
 
 		midPanel.add(js, BorderLayout.NORTH);
 		midPanel.add(buttons, BorderLayout.SOUTH);
+		midPanel.add(mensageLabel,BorderLayout.SOUTH);
 
-		frame.add(topPanel, BorderLayout.NORTH);
-		frame.add(midPanel, BorderLayout.CENTER);
-		frame.add(botPanel, BorderLayout.SOUTH);
+		// JTABLE STUFF
+
+		modelAutomatic = new DefaultTableModel(data, header);
+		JTable table1 = new JTable(modelAutomatic);
+		table.setPreferredScrollableViewportSize(new Dimension(180, 150));
+		table.setFillsViewportHeight(true);
+
+		JScrollPane js1 = new JScrollPane(table1);
+		js1.setVisible(true);
+
+		JButton saveConfig1 = new JButton("Save");
+		saveConfig.setPreferredSize(new Dimension(20, 30));
+		saveConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		JPanel results1 = new JPanel();
+		JTextField fpText1 = new JTextField("             ");
+		JTextField fnText1 = new JTextField("             ");
+		results1 = numberOfFakesTextFields(fpText1, fnText1);
+
+		JButton avaliateConfig1 = new JButton("Avaliate");
+		avaliateConfig.setPreferredSize(new Dimension(20, 30));
+		avaliateConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// listRules = getRulesList(modelManual); // lista de Regras que têm o nome e o
+				// peso
+
+				String fpString = Integer.toString(calculateFP(listHam));
+				String fnString = Integer.toString(calculateFN(listSpam));
+				fpText1.setText(fpString);
+				fnText1.setText(fnString);
+			}
+		});
+
+		JPanel buttons1 = new JPanel();
+		buttons1.setLayout(new GridLayout(1, 3));
+		buttons1.add(saveConfig1);
+		buttons1.add(avaliateConfig1);
+		buttons1.add(results1);
+
+		js1.setPreferredSize(new Dimension(400, 200));
+		buttons1.setPreferredSize(new Dimension(400, 50));
+
+		botPanel.add(js1);
+		botPanel.add(buttons1);
+
+		frame.setLayout(new FlowLayout());
+		frame.add(topPanel);
+		frame.add(midPanel);
+		frame.add(botPanel);
 
 	}
 
-	private void setModelContent(ArrayList<String> list, DefaultTableModel model) {
-		listRulesName = list;
+	private void setModelContent(ArrayList<Rule> list, DefaultTableModel model) {// passo aqui uma lista de Rules
 		for (int i = 0; i != list.size(); i++) {
-			model.addRow(new Object[] { list.get(i), setPesos() });
+			model.addRow(new Object[] { list.get(i).getRule(), list.get(i).getValue() });
 		}
 	}
 
-	public Double setPesos() {// apos carregar os caminhos carrega pesos aleatorios
-		double randomValue = 0.0;
-		double d = 0.0;
-		Random r = new Random();
-		randomValue = -5 + (5 - (-5)) * r.nextDouble();
-		d = round(randomValue, 3);
-		return d;
-	}
-
-	public ArrayList<Rule> createRules(ArrayList<Double> pesos) {
-		ArrayList<Rule> rulesList = new ArrayList<Rule>();
-		for (int i = 0; i != pesos.size(); i++) {
-			Rule rule = new Rule(listRulesName.get(i), pesos.get(i));
-			rulesList.add(rule);
-			System.out.println(rule.getRule() + " " + rule.getValue());
-		}
-
-		return rulesList;
-	}
-
+	// vai a tabela da interface grafica buscar a lista para avaliar ou gravar num
+	// ficheiro
 	private ArrayList<Rule> getRulesList(DefaultTableModel model) {
 
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
-		ArrayList<Double> pesos = new ArrayList<Double>();
 		for (int count = 0; count < model.getRowCount(); count++) {
-			pesos.add(Double.parseDouble(model.getValueAt(count, 1).toString()));
+			String name = model.getValueAt(count, 0).toString();
+			Double p = (Double.parseDouble(model.getValueAt(count, 1).toString()));
+			Rule r = new Rule(name, p);
+			rulesList.add(r);
 		}
-		rulesList = createRules(pesos);
+
 		return rulesList;
-	}
-
-	public double round(double value, int places) {
-		if (places < 0)
-			throw new IllegalArgumentException();
-
-		BigDecimal bd = new BigDecimal(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
 	}
 
 	// devolve o caminho do ficheiro que for selecionado
@@ -300,11 +337,11 @@ public class GUI {
 	// este método cria um painel dando um botão e um textfield
 	private JPanel getPanel(JButton search, JTextField titleText) {
 		JPanel subpanel = new JPanel();
-		subpanel.setLayout(new BorderLayout());
+		subpanel.setLayout(new GridLayout(1, 2));
 		titleText.setPreferredSize(new Dimension(210, 40));
 		titleText.setEditable(false);
-		subpanel.add(titleText, BorderLayout.WEST);
-		subpanel.add(search, BorderLayout.EAST);
+		subpanel.add(titleText);
+		subpanel.add(search);
 		return subpanel;
 	}
 
@@ -328,7 +365,7 @@ public class GUI {
 
 	public static void main(String[] args) {
 		GUI window = new GUI();
-		window.open(300, 600);
+		window.open(400, 700);
 	}
 
 }

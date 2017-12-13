@@ -5,32 +5,39 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ReadFile {
 
 	private Scanner scan;
 
-	public ArrayList<String> readRules(String file) {
-		ArrayList<String> rules = new ArrayList<String>();
+	// lê o ficheiro Rules.cf se não tiver as regras no ficheiro vai gerar uns
+	// valores entre -5 e 5 aleatorios para criar uma lista de regras
+	public ArrayList<Rule> readRules(String file) {
+		ArrayList<Rule> rules = new ArrayList<Rule>();
 		String s = new String();
+		Double p;
 		try {
 			scan = new Scanner(new File(file));
-
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while trying to read file");
-
 		}
-
 		while (scan.hasNext()) {
-			s = scan.nextLine();
-			rules.add(s);
+			s = scan.next();
+			if (scan.hasNextDouble()) {
+				p = scan.nextDouble();
+			} else {
+				p = addRondomValue();
+			}
+			System.out.println(s + p);
+			Rule rule = new Rule(s, p);
+			rules.add(rule);
 		}
 		scan.close();
-		for (String s1 : rules) {
-			// System.out.println(s1);
-		}
 		return rules;
 	}
 
@@ -43,7 +50,6 @@ public class ReadFile {
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while trying to read file");
 		}
-		System.out.println("teste");
 		while (scan.hasNextLine()) {// l� linha a linha
 			s = scan.nextLine();
 			number++;
@@ -53,7 +59,7 @@ public class ReadFile {
 		return number;
 	}
 
-	public ArrayList<Email> readHam(String file) { // recebe o caminho para o ham.log ou spam.log
+	public ArrayList<Email> readHamOrSpam(String file) { // recebe o caminho para o ham.log ou spam.log
 		ArrayList<Email> mailList = new ArrayList<Email>();// cria uma lista de mails
 		String pesos[] = null;
 		try {
@@ -95,7 +101,7 @@ public class ReadFile {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
-			fw = new FileWriter("/Users/danielcoimbra/Desktop/rules.txt");
+			fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
 
 			for (Rule r : listRules) {
@@ -120,4 +126,21 @@ public class ReadFile {
 
 	}
 
+	public Double addRondomValue() {// apos carregar os caminhos carrega pesos aleatorios
+		double randomValue = 0.0;
+		double d = 0.0;
+		Random r = new Random();
+		randomValue = -5 + (5 - (-5)) * r.nextDouble();
+		d = round(randomValue, 3);
+		return d;
+	}
+
+	public double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
 }
