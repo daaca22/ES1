@@ -9,7 +9,7 @@ import org.junit.Test;
 public class TestCase {
 
 	@Test
-	public final void test() {
+	public final void test() {// Criar um vector com pesos, para testar os metodos FP e de FN e separar isto por metodos uma para cada classe
 		// fail("Not yet implemented"); // TODO
 		ReadFile rf = new ReadFile();
 		int regras = rf.numberOfRules("/Users/danielcoimbra/Desktop/ES/rules.cf");
@@ -27,13 +27,15 @@ public class TestCase {
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
 		rulesList.add(rule);
 		rf.writeRules("teste", rulesList);
+		rf.addRondomValue();
 
 		GUI gui = new GUI();
-		gui.calculateFP(readHams);
-		gui.calculateFN(readHams);
-		gui.getPeso("rule");
+//		gui.calculateFP(readHams);
+//		gui.calculateFN(readHams);
+//		gui.getPeso("rule");
 		ArrayList<Double> pesos = new ArrayList<Double>();
 		gui.open(10, 10);
+		
 
 	}
 

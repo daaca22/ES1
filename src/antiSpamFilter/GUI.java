@@ -9,7 +9,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -27,17 +29,27 @@ public class GUI {
 	private JFrame frame = new JFrame("Filtro Anti-Spam");
 	private Dimension dimension;
 	private String ham;
-	private String rules;
+	static String rules;
 	private String spam;
 	private ReadFile rf = new ReadFile();
+ 
 
 	private DefaultTableModel modelManual = new DefaultTableModel();
 	private DefaultTableModel modelAutomatic = new DefaultTableModel();
 
-	private ArrayList<Rule> listRules = new ArrayList<Rule>();
+	public ArrayList<Rule> listRules = new ArrayList<Rule>();
+	
+	static public ArrayList<Rule> staticRulesList = new ArrayList<Rule>();
 
-	private ArrayList<Email> listHam = new ArrayList<Email>();
-	private ArrayList<Email> listSpam = new ArrayList<Email>();
+	static   ArrayList<Email> listHam = new ArrayList<Email>();
+	static   ArrayList<Email> listSpam = new ArrayList<Email>();
+
+	public ArrayList<Email> getListHam() {
+		return listHam;
+	}
+	public ArrayList<Email> getListSpam() {
+		return listSpam;
+	}
 
 	public GUI() {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -80,12 +92,12 @@ public class GUI {
 		JPanel subpanel = getPanel(search1, titleText1);
 		JPanel subpanel2 = getPanel(search2, titleText2);
 		JPanel subpanel3 = getPanel(search3, titleText3);
-		
+
 		// Label de interação com o utilizador
-		
+
 		JLabel mensageLabel = new JLabel("");
 		mensageLabel.setFont(new Font("Verdana", Font.BOLD, 15));
-		mensageLabel.setForeground(Color.RED);
+		mensageLabel.setForeground(Color.GREEN);
 
 		// aqui são colocados por ordem os subpaineis, no primeiro painel, dos caminhos.
 		topPanel.add(subpanel);
@@ -100,6 +112,9 @@ public class GUI {
 				if (rules.endsWith("rules.cf")) {
 					if (rules != null) {
 						setModelContent(rf.readRules(rules), modelManual);// vai carregar as regras na GUI
+						setModelContent(rf.readRules(rules), modelAutomatic);
+						listRules = getRulesList(modelManual);
+						staticRulesList = listRules;
 					} else {
 						titleText1.setText("No File Selected");
 					}
@@ -108,7 +123,7 @@ public class GUI {
 				}
 			}
 		});
-
+		// botão para adicionar o fiheiro ham.log
 		search2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ham = getPath(search2, titleText2);
@@ -124,6 +139,7 @@ public class GUI {
 				}
 			}
 		});
+		// botão para adicionar o fiheiro spam.log
 		search3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				spam = getPath(search3, titleText3);
@@ -136,11 +152,11 @@ public class GUI {
 						titleText3.setText("No File Selected");
 					}
 				} else {
-					titleText2.setText("Wrong File");
+					titleText3.setText("Wrong File");
 				}
 			}
 		});
-
+		// botão para guardar os pesos e os seus valores no ficheiro rules.cf
 		JButton saveConfig = new JButton("Save");
 		saveConfig.setPreferredSize(new Dimension(20, 30));
 		saveConfig.addActionListener(new ActionListener() {
@@ -150,6 +166,7 @@ public class GUI {
 				mensageLabel.setText("Ficheiro foi Guardado com Sucesso!");
 			}
 		});
+
 		JPanel results = new JPanel();
 		JTextField fpText = new JTextField("             ");
 		JTextField fnText = new JTextField("             ");
@@ -159,19 +176,22 @@ public class GUI {
 		avaliateConfig.setPreferredSize(new Dimension(20, 30));
 		avaliateConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listRules = getRulesList(modelManual); // lista de Regras que têm o nome e o peso
 
-				String fpString = Integer.toString(calculateFP(listHam));
-				String fnString = Integer.toString(calculateFN(listSpam));
-				fpText.setText(fpString);
-				fnText.setText(fnString);
-				mensageLabel.setText("Ficheiro foi Avaliado com Sucesso!");
+				if (listHam.isEmpty() || listSpam.isEmpty()) {// se o ficheiro ham.log ou spam.log não estiverem carregados manda esta msg abaixo.
+					mensageLabel.setText("Tem de carregar os ficheiros spam.log e ham.log");
+				} else {
+					listRules = getRulesList(modelManual); // lista de Regras que têm o nome e o peso
+					String fpString = Integer.toString(calculateFP(listHam,listRules));
+					String fnString = Integer.toString(calculateFN(listSpam,listRules));
+					fpText.setText(fpString);
+					fnText.setText(fnString);
+					mensageLabel.setText("Ficheiro foi Avaliado com Sucesso!");
+				}
 			}
 		});
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
-		// buttons.setPreferredSize(new Dimension(100, 200));
 		buttons.add(saveConfig);
 		buttons.add(avaliateConfig);
 		buttons.add(results);
@@ -194,7 +214,7 @@ public class GUI {
 
 		midPanel.add(js, BorderLayout.NORTH);
 		midPanel.add(buttons, BorderLayout.SOUTH);
-		midPanel.add(mensageLabel,BorderLayout.SOUTH);
+		midPanel.add(mensageLabel, BorderLayout.SOUTH);
 
 		// JTABLE STUFF
 
@@ -219,16 +239,22 @@ public class GUI {
 		results1 = numberOfFakesTextFields(fpText1, fnText1);
 
 		JButton avaliateConfig1 = new JButton("Avaliate");
-		avaliateConfig.setPreferredSize(new Dimension(20, 30));
-		avaliateConfig.addActionListener(new ActionListener() {
+		avaliateConfig1.setPreferredSize(new Dimension(20, 30));
+		avaliateConfig1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// listRules = getRulesList(modelManual); // lista de Regras que têm o nome e o
 				// peso
-
-				String fpString = Integer.toString(calculateFP(listHam));
-				String fnString = Integer.toString(calculateFN(listSpam));
-				fpText1.setText(fpString);
-				fnText1.setText(fnString);
+ 
+				 
+				 AntiSpamFilterAutomaticConfiguration anti =  new AntiSpamFilterAutomaticConfiguration();
+				 try {
+					anti.main(null);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				 
+				 
+				 
 			}
 		});
 
@@ -250,7 +276,7 @@ public class GUI {
 		frame.add(botPanel);
 
 	}
-
+	// este método para colocar na Tabela os pesos e o seus valores.
 	private void setModelContent(ArrayList<Rule> list, DefaultTableModel model) {// passo aqui uma lista de Rules
 		for (int i = 0; i != list.size(); i++) {
 			model.addRow(new Object[] { list.get(i).getRule(), list.get(i).getValue() });
@@ -290,40 +316,39 @@ public class GUI {
 	}
 
 	// calcular o numero de FP ao percorrer a lista com os emails de ham.log
-	public int calculateFP(ArrayList<Email> hamList) {
+	public int calculateFP(ArrayList<Email> hamList,ArrayList<Rule> listRules) {
 		int fp = 0;
 		for (Email email : hamList) {
-			if (isSpam(email.getValues()))
+			if (isSpam(email.getValues(),listRules))// se for maior que 5 é spam logo não é ham o que torna falso positivo
 				fp++;
 		}
 		return fp;
 	}
 
 	// calcular o numero de FN ao percorrer a lista com os emails de spam.log
-	public int calculateFN(ArrayList<Email> spamList) {
+	public int calculateFN(ArrayList<Email> spamList,ArrayList<Rule> listRules) {
 		int fn = 0;
 		for (Email email : spamList) {
-			if (!isSpam(email.getValues()))
+			if (!isSpam(email.getValues(),listRules))
 				fn++;
 		}
 		return fn;
 	}
 
 	// este metodo vê se está acima ou abaixo de 5
-	private Boolean isSpam(String[] rules) {
+	private Boolean isSpam(String[] rules,ArrayList<Rule> listRules) {// começar por melhorar este
 		Double d = 0.0;
 		for (int i = 0; i != rules.length; i++) {
-			d = d + getPeso(rules[i]);
+			d = d + getPeso(rules[i],listRules);
 		}
 		if (d > 5) {
 			return true;
 		}
 		return false;
 	}
-
 	// este metodo percorre a lista de Regras(classe Rule) e vai buscar o peso de
 	// cada Regra para somar no metodo anterior
-	public Double getPeso(String rule) {
+	public Double getPeso(String rule, ArrayList<Rule> listRules) {
 		Double d = 0.0;
 		for (Rule r : listRules) {
 			if (r.getRule().equals(rule)) {
@@ -344,6 +369,11 @@ public class GUI {
 		subpanel.add(search);
 		return subpanel;
 	}
+	
+//	public ArrayList<Rule> getRegrasList() {
+//		System.out.println("teste2 "+staticRulesList.size());
+//		return staticRulesList;
+//	}
 
 	public JPanel numberOfFakesTextFields(JTextField fpText, JTextField fnText) {
 		JPanel pane = new JPanel();

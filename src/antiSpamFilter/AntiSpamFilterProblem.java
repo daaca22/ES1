@@ -8,14 +8,15 @@ import org.uma.jmetal.solution.DoubleSolution;
 
 public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 
-	private ReadFile rf = new ReadFile();
+	private static ReadFile rf = new ReadFile();
+	private static int number = rf.numberOfRules(GUI.rules);
+	private GUI gui = new GUI();
 
 	public AntiSpamFilterProblem() {
 		// 10 variables (anti-spam filter rules) by default
 		// abrir p ficheiro rules.cf e por o numeoro de regras!! ex 300 this(300)
-
-		this(10);// 335
-		
+		this(number);// 335
+		System.out.println(number);
 
 	}
 	// calcular aqui FP e FN nesta classe
@@ -38,26 +39,28 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 	}
 
 	public void evaluate(DoubleSolution solution) {// tem de ser executada para cada vector!
-		double aux, xi, xj;
-		double[] fx = new double[getNumberOfObjectives()];
+		ArrayList<Rule> oldListRegras = new ArrayList<Rule>();
+		ArrayList<Rule> newListRegras = new ArrayList<Rule>();
 		double[] x = new double[getNumberOfVariables()];
-		for (int i = 0; i < solution.getNumberOfVariables(); i++) {
+		double fp = 0;
+		double fn = 0;
+		oldListRegras = GUI.staticRulesList; 
+		for (int i = 0; i < solution.getNumberOfVariables(); i++) {// x é o vector com os pesos
 			x[i] = solution.getVariableValue(i);
+			Rule r = new Rule(oldListRegras.get(i).getRule(), x[i]);
+			newListRegras.add(r);
 		}
+		
+		fp = gui.calculateFP(GUI.listHam, newListRegras);
+		fn = gui.calculateFN(GUI.listSpam, newListRegras);
+ 
+		
+		
+		// fazer sem hashmap agr e com hashmap dps se tiver tempo.
 
-		// tem que dar numeros inteiros
-		fx[0] = 0.0;
-		for (int var = 0; var < solution.getNumberOfVariables() - 1; var++) {
-			fx[0] += Math.abs(x[0]); // Example for testing
-		}
-		// fazer o somatorio aqui e usar a mesma função para o manual!
-		// apagar este codigo teste e faer um que some as regras todas
-		fx[1] = 0.0;
-		for (int var = 0; var < solution.getNumberOfVariables(); var++) {
-			fx[1] += Math.abs(x[1]); // Example for testing
-		}
-
-		solution.setObjective(0, fx[0]);// FP
-		solution.setObjective(1, fx[1]);// FN
+		solution.setObjective(0, fp);// FP
+		solution.setObjective(1, fn);// FN
 	}
+	// criar metodo no ReadFile que leia os outros 2 ficheiros para descobrir o com
+	// FP mais baixos e passar esses valores para o GUI
 }
