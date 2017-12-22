@@ -46,7 +46,6 @@ public class AntiSpamFilterAutomaticConfiguration {
 		new ComputeQualityIndicators<>(experiment).run();
 		new GenerateLatexTablesWithStatistics(experiment).run();
 		new GenerateBoxplotsWithR<>(experiment).setRows(1).setColumns(1).run();
-		System.out.println("FIM");
 
 	}
 

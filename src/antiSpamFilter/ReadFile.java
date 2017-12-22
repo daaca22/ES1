@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -50,7 +47,7 @@ public class ReadFile {
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while trying to read file");
 		}
-		while (scan.hasNextLine()) {// l� linha a linha
+		while (scan.hasNextLine()) {// le linha a linha
 			s = scan.nextLine();
 			number++;
 		}
@@ -126,12 +123,12 @@ public class ReadFile {
 
 	}
 
-	public Double addRondomValue() {// apos carregar os caminhos carrega pesos aleatorios
+	public Double addRondomValue() {// apos carregar os caminhos carrega pesos aleatorios, quando se carrega
+									// rules.cf sem pesos
 		double randomValue = 0.0;
-		double d = 0.0;
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
-		return d;
+		return randomValue;
 	}
 
 	public Double[] readVectorPesos() {// retornar um hashmap com o vector de FP e FN e com um arrayList de Pesos.
@@ -178,15 +175,15 @@ public class ReadFile {
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while trying to read file");
 		}
+
 		while (scan.hasNextLine()) {
-			while (scan.hasNext()) {
-				s++;
-				if (s == row) {
-					line = scan.nextLine();
-				}
-				scan.nextLine();
+			s++;
+			if (s == row) {
+				line = scan.nextLine();
 			}
+			scan.nextLine();
 		}
+
 		String[] p = line.split(" ");
 		for (int i = 0; i != p.length; i++) {
 			pesos.add(Double.parseDouble(p[i]));

@@ -9,7 +9,10 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -54,7 +57,6 @@ public class GUI {
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setLocation((int) dimension.getWidth() / 3, (int) dimension.getHeight() / 4);
 		frame.setVisible(true);
-		rf.readVectorPesos();
 	}
 
 	public void addFrameContent() {
@@ -112,7 +114,7 @@ public class GUI {
 					}
 				} else {
 					titleText1.setText("Wrong File");
-					rules = null;
+					// rules = null;
 				}
 			}
 		});
@@ -265,6 +267,10 @@ public class GUI {
 					fpTextAuto.setText(fpString);
 					fnTextAuto.setText(fnString);
 					mensageLabel.setText("Ficheiro foi Avaliado Automáticamente com Sucesso!");
+					
+					// generate R and latex.	
+					generateR();
+					generateLatexReport();
 				} else {
 					mensageLabel.setText("Não Foram Carregados Ficheiros!");
 				}
@@ -288,6 +294,41 @@ public class GUI {
 		frame.add(midPanel);
 		frame.add(botPanel);
 
+	}
+
+	private void generateR() {
+		String[] params = new String[2];
+
+		params[0] = "/Library/Frameworks/R.framework/Versions/3.4/Resources/Rscript";
+		// "C:\\Program Files\\R\\R-3.4.1\\bin\\x64\\Rscript.exe";
+		params[1] = "/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/R/HV.Boxplot.R";
+		// "C:\\Users\\vbasto\\git\\ES1\\experimentBaseDirectory\\AntiSpamStudy\\R\\HV.Boxplot.R";
+		String[] envp = new String[1];
+
+		envp[0] = "Path=/Library/Frameworks/R.framework/Versions/3.4/Resources";
+		// "Path=C:\\Program Files\\R\\R-3.4.1\\bin\\x64";
+		try {
+			Process p = Runtime.getRuntime().exec(params, envp,
+					new File("/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/R"));
+			// C:\\Users\\vbasto\\git\\ES1\\experimentBaseDirectory\\AntiSpamStudy\\R
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	public void generateLatexReport() {
+		String[] params = new String[2];
+		params[0] = "/usr/local/texlive/2017/bin/x86_64-darwin/pdflatex";
+		params[1] = "/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/latex/AntiSpamStudy.tex";
+		String[] envp = new String[1];
+		envp[0] = "Path=/usr/local/texlive/2017/bin/x86_64-darwin";
+		try {
+			Process p = Runtime.getRuntime().exec(params, envp,
+					new File("/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/latex"));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	// este método para colocar na Tabela os pesos e o seus valores.
