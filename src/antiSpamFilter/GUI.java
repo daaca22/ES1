@@ -172,7 +172,7 @@ public class GUI {
 		JTextField fpText = new JTextField("             ");
 		JTextField fnText = new JTextField("             ");
 		results = numberOfFakesTextFields(fpText, fnText);
-
+		// butão avaliar da configuração manual
 		JButton avaliateConfig = new JButton("Avaliate");
 		avaliateConfig.setPreferredSize(new Dimension(20, 30));
 		avaliateConfig.addActionListener(new ActionListener() {
@@ -267,8 +267,8 @@ public class GUI {
 					fpTextAuto.setText(fpString);
 					fnTextAuto.setText(fnString);
 					mensageLabel.setText("Ficheiro foi Avaliado Automáticamente com Sucesso!");
-					
-					// generate R and latex.	
+
+					// generate R and latex.
 					generateR();
 					generateLatexReport();
 				} else {
