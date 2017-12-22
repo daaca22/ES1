@@ -3,6 +3,7 @@ package files;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,7 +143,11 @@ public class ReadFile {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
-			fw = new FileWriter(file);
+//			if(isAuto == true) {
+//				fw = new FileWriter("AntiSpamConfigurationForProfessionalMailbox");
+//			}else {
+				fw = new FileWriter(file);
+//			}
 			bw = new BufferedWriter(fw);
 
 			for (Rule r : listRules) {
@@ -263,7 +268,8 @@ public class ReadFile {
 		for (int i = 0; i != p.length; i++) {
 			pesos.add(Double.parseDouble(p[i]));
 		}
-
 		return pesos;
 	}
+	
+	
 }

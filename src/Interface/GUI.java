@@ -190,6 +190,8 @@ public class GUI {
 		JPanel results = new JPanel();
 		JTextField fpText = new JTextField("             ");
 		JTextField fnText = new JTextField("             ");
+		fpText.setEnabled(false);
+		fnText.setEnabled(false);
 		results = numberOfFakesTextFields(fpText, fnText);
 		// butão avaliar da configuração manual
 		JButton avaliateConfig = new JButton("Avaliate");
@@ -254,7 +256,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				if (rules != null && spam != null && ham != null) {
 					ArrayList<Rule> list = getRulesList(modelAutomatic);
-					rf.writeRules(rules, list);
+					rf.writeRules("AntiSpamConfigurationForProfessionalMailbox/rules.cf", list);
 					mensageLabel.setText("Ficheiro foi Guardado com Sucesso!");
 				} else {
 					mensageLabel.setText("Não Foram Carregados Ficheiros!");
@@ -265,6 +267,9 @@ public class GUI {
 		JTextField fpTextAuto = new JTextField("             ");
 		JTextField fnTextAuto = new JTextField("             ");
 		resultsAuto = numberOfFakesTextFields(fpTextAuto, fnTextAuto);
+
+		fpTextAuto.setEnabled(false);
+		fnTextAuto.setEnabled(false);
 
 		JButton avaliateConfigAuto = new JButton("Avaliate");
 		avaliateConfigAuto.setPreferredSize(new Dimension(20, 30));
@@ -339,6 +344,7 @@ public class GUI {
 			e1.printStackTrace();
 		}
 	}
+
 	/**
 	 * This method is responsible for generating the Latex pdf using the pdflatex
 	 * command in a given directory and a given file tex.
