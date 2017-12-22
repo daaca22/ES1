@@ -53,9 +53,7 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 		
 		fp = gui.calculateFP(GUI.listHam, newListRegras);
 		fn = gui.calculateFN(GUI.listSpam, newListRegras);
- 
-		
-		
+
 		// fazer sem hashmap agr e com hashmap dps se tiver tempo.
 
 		solution.setObjective(0, fp);// FP

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -33,7 +34,6 @@ public class ReadFile {
 			} else {
 				p = addRondomValue();
 			}
-			System.out.println(s + p);
 			Rule rule = new Rule(s, p);
 			rules.add(rule);
 		}
@@ -131,16 +131,67 @@ public class ReadFile {
 		double d = 0.0;
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
-		d = round(randomValue, 3);
 		return d;
 	}
 
-	public double round(double value, int places) {
-		if (places < 0)
-			throw new IllegalArgumentException();
+	public Double[] readVectorPesos() {// retornar um hashmap com o vector de FP e FN e com um arrayList de Pesos.
 
-		BigDecimal bd = new BigDecimal(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
+		Double[] d = new Double[3];
+		Double fp = 0.0;
+		Double fn = 0.0;
+		Double oldFp = 10000.0;
+		Double oldFn = 0.0;
+		int row = 0;
+		int c = 1;
+		try {
+			scan = new Scanner(new File("experimentBaseDirectory/referenceFronts/AntiSpamFilterProblem.NSGAII.rf"));
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while trying to read file");
+		}
+		while (scan.hasNext()) {
+
+			fp = scan.nextDouble();
+			fn = scan.nextDouble();
+
+			if (oldFp > fp) {
+				oldFp = fp;
+				oldFn = fn;
+				row = c;
+			}
+			c++;
+
+		}
+		d[0] = oldFp;
+		d[1] = oldFn;
+		d[2] = (double) row;
+		getPesosFromFileAuto(row);
+		scan.close();
+		return d;
+	}
+
+	public ArrayList<Double> getPesosFromFileAuto(int row) {
+		int s = 0;
+		String line = null;
+		ArrayList<Double> pesos = new ArrayList<Double>();
+		try {
+			scan = new Scanner(new File("experimentBaseDirectory/referenceFronts/AntiSpamFilterProblem.NSGAII.rs"));
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while trying to read file");
+		}
+		while (scan.hasNextLine()) {
+			while (scan.hasNext()) {
+				s++;
+				if (s == row) {
+					line = scan.nextLine();
+				}
+				scan.nextLine();
+			}
+		}
+		String[] p = line.split(" ");
+		for (int i = 0; i != p.length; i++) {
+			pesos.add(Double.parseDouble(p[i]));
+		}
+
+		return pesos;
 	}
 }
