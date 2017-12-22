@@ -9,12 +9,27 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * This Class handles everything that have something to do with files, this
+ * class uses Scanner to read and write in the files.
+ * 
+ * @author Daniel Coimbra and Goncalo Meireles
+ *
+ */
+
 public class ReadFile {
 
 	private Scanner scan;
 
-	// lê o ficheiro Rules.cf se não tiver as regras no ficheiro vai gerar uns
-	// valores entre -5 e 5 aleatorios para criar uma lista de regras
+	/**
+	 * This method was made to read the Rules.cf file, if the rules.cf file does not
+	 * have the values of the rules, it will use the addRandomValue() method, to
+	 * generate random Doubles.
+	 * 
+	 * @param file
+	 *            String that has the path for the rules.cf
+	 * @return ArrayList of class Rule.
+	 */
 	public ArrayList<Rule> readRules(String file) {
 		ArrayList<Rule> rules = new ArrayList<Rule>();
 		String s = new String();
@@ -38,7 +53,14 @@ public class ReadFile {
 		return rules;
 	}
 
-	public int numberOfRules(String file) { // este metodo vai contar o numero de regras do ficheiro rules.cf
+	/**
+	 * This method was made to count the number of rules in the rules.cf file.
+	 * 
+	 * @param file
+	 *            String that has the path for the ham.log.txt or spam.log.txt file.
+	 * @return integer with number of rules.
+	 */
+	public int numberOfRules(String file) {
 		String s = new String();
 		int number = 0; // contador
 		try {
@@ -55,6 +77,14 @@ public class ReadFile {
 
 		return number;
 	}
+
+	/**
+	 * This method was made to read the ham.log.txt and spam.log.txt file.
+	 * 
+	 * @param file
+	 *            String that has the path for the ham.log.txt or spam.log.txt file.
+	 * @return ArrayList of class Email.
+	 */
 
 	public ArrayList<Email> readHamOrSpam(String file) { // recebe o caminho para o ham.log ou spam.log
 		ArrayList<Email> mailList = new ArrayList<Email>();// cria uma lista de mails
@@ -93,6 +123,17 @@ public class ReadFile {
 		return n;
 	}
 
+	/**
+	 * This method was made to write the rules name and their values in the rules.cf
+	 * file.
+	 * 
+	 * @param file
+	 *            String that has the path for the ham.log.txt or spam.log.txt file.
+	 * @param listRules
+	 *            ArrayList with Rules that will iterate to write in the file
+	 * @return nothing.
+	 */
+
 	public void writeRules(String file, ArrayList<Rule> listRules) {
 
 		BufferedWriter bw = null;
@@ -123,15 +164,32 @@ public class ReadFile {
 
 	}
 
-	public Double addRondomValue() {// apos carregar os caminhos carrega pesos aleatorios, quando se carrega
-									// rules.cf sem pesos
+	/**
+	 * This method was made to generate random Doubles between -5 and 5.
+	 * 
+	 * @param nothing
+	 * 
+	 * @return random Double between -5 and 5.
+	 */
+	public Double addRondomValue() {
 		double randomValue = 0.0;
 		Random r = new Random();
 		randomValue = -5 + (5 - (-5)) * r.nextDouble();
 		return randomValue;
 	}
 
-	public Double[] readVectorPesos() {// retornar um hashmap com o vector de FP e FN e com um arrayList de Pesos.
+	/**
+	 * This method was made to read the AntiSpamFilterProblem.NSGAII.rf file, and it
+	 * will fine the best values for FP and FN, and also fine the line that they are
+	 * in.
+	 * 
+	 * @param nothing
+	 * 
+	 * @return Array of Doubles where the 2 first positions are the FP and FN
+	 *         values, respectively and the third position is the line that they are
+	 *         in.
+	 */
+	public Double[] readVectorPesos() {
 
 		Double[] d = new Double[3];
 		Double fp = 0.0;
@@ -155,17 +213,31 @@ public class ReadFile {
 				oldFn = fn;
 				row = c;
 			}
+			if (oldFp == fp && oldFn > fn) {
+				oldFp = fp;
+				oldFn = fn;
+				row = c;
+			}
 			c++;
 
 		}
 		d[0] = oldFp;
 		d[1] = oldFn;
 		d[2] = (double) row;
-		getPesosFromFileAuto(row);
 		scan.close();
 		return d;
 	}
 
+	/**
+	 * This method was made to read the AntiSpamFilterProblem.NSGAII.rs file, and it
+	 * will read the values of the line that is given.
+	 * 
+	 * @param integer
+	 *            number of the line.
+	 * 
+	 * @return ArrayList of Doubles with the values for the rules from the automatic
+	 *         configuration
+	 */
 	public ArrayList<Double> getPesosFromFileAuto(int row) {
 		int s = 0;
 		String line = null;

@@ -19,7 +19,6 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 		System.out.println(number);
 
 	}
-	// calcular aqui FP e FN nesta classe
 
 	public AntiSpamFilterProblem(Integer numberOfVariables) {
 		setNumberOfVariables(numberOfVariables);
@@ -54,11 +53,7 @@ public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 		fp = gui.calculateFP(GUI.listHam, newListRegras);
 		fn = gui.calculateFN(GUI.listSpam, newListRegras);
 
-		// fazer sem hashmap agr e com hashmap dps se tiver tempo.
-
 		solution.setObjective(0, fp);// FP
 		solution.setObjective(1, fn);// FN
 	}
-	// criar metodo no ReadFile que leia os outros 2 ficheiros para descobrir o com
-	// FP mais baixos e passar esses valores para o GUI
 }

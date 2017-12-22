@@ -9,10 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -25,6 +23,13 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+
+/**
+ * This Class handles everything about the interface, and user interaction.
+ * 
+ * @author Daniel Coimbra and Goncalo Meireles
+ *
+ */
 
 public class GUI {
 
@@ -58,6 +63,15 @@ public class GUI {
 		frame.setLocation((int) dimension.getWidth() / 3, (int) dimension.getHeight() / 4);
 		frame.setVisible(true);
 	}
+
+	/**
+	 * This method is the main method in this class and it handles all the buttons,
+	 * TextFields, Tables and etc.
+	 * 
+	 * @param nothing
+	 * 
+	 * @return nothing.
+	 */
 
 	public void addFrameContent() {
 
@@ -296,27 +310,39 @@ public class GUI {
 
 	}
 
+	/**
+	 * This method is responsible for generating the R graphic using the Rscript
+	 * command in a given directory and a given file R.
+	 * 
+	 * @param nothing
+	 * 
+	 * @return nothing.
+	 */
 	private void generateR() {
 		String[] params = new String[2];
 
 		params[0] = "/Library/Frameworks/R.framework/Versions/3.4/Resources/Rscript";
-		// "C:\\Program Files\\R\\R-3.4.1\\bin\\x64\\Rscript.exe";
 		params[1] = "/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/R/HV.Boxplot.R";
-		// "C:\\Users\\vbasto\\git\\ES1\\experimentBaseDirectory\\AntiSpamStudy\\R\\HV.Boxplot.R";
-		String[] envp = new String[1];
 
+		String[] envp = new String[1];
 		envp[0] = "Path=/Library/Frameworks/R.framework/Versions/3.4/Resources";
-		// "Path=C:\\Program Files\\R\\R-3.4.1\\bin\\x64";
+
 		try {
 			Process p = Runtime.getRuntime().exec(params, envp,
 					new File("/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/R"));
-			// C:\\Users\\vbasto\\git\\ES1\\experimentBaseDirectory\\AntiSpamStudy\\R
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
 
+	/**
+	 * This method is responsible for generating the Latex pdf using the pdflatex
+	 * command in a given directory and a given file tex.
+	 * 
+	 * @param nothing
+	 * 
+	 * @return nothing.
+	 */
 	public void generateLatexReport() {
 		String[] params = new String[2];
 		params[0] = "/usr/local/texlive/2017/bin/x86_64-darwin/pdflatex";
@@ -331,7 +357,18 @@ public class GUI {
 		}
 	}
 
-	// este método para colocar na Tabela os pesos e o seus valores.
+	/**
+	 * This method is responsible for setting the Rules and his values in the manual
+	 * table.
+	 * 
+	 * @param list
+	 *            ArrayList of Rules
+	 * @param model
+	 *            DefaultTableModel of the desired table, in this case the manual
+	 *            model.
+	 * 
+	 * @return nothing.
+	 */
 	private void setModelContentManual(ArrayList<Rule> list, DefaultTableModel model) {// passo aqui uma lista de Rules
 		clearTable(model);
 		for (int i = 0; i != list.size(); i++) {
@@ -339,7 +376,22 @@ public class GUI {
 		}
 	}
 
-	// este método coloca os pesos na tabela automatica
+	/**
+	 * This method is responsible for setting the Rules and his values in the
+	 * automatic configuration table.
+	 * 
+	 * @param list
+	 *            ArrayList of Rules, that will get the name of the rules
+	 * @param model
+	 *            DefaultTableModel of the desired table, in this case the automatic
+	 *            model.
+	 * @param listD
+	 *            ArrayList of Doubles, that comes from the automatic algorithm, to
+	 *            get the value of the rules
+	 * 
+	 * @return nothing.
+	 */
+
 	private void setModelContentAuto(ArrayList<Rule> list, DefaultTableModel model, ArrayList<Double> listD) {
 		clearTable(model);
 		for (int i = 0; i != list.size(); i++) {
@@ -347,6 +399,14 @@ public class GUI {
 		}
 	}
 
+	/**
+	 * This method is responsible for cleaning the JTabel values of every row
+	 * 
+	 * @param model
+	 *            DefaultTableModel that the values will be deleted from.
+	 * 
+	 * @return nothing.
+	 */
 	private void clearTable(DefaultTableModel model) {
 		if (model.getRowCount() > 0) {
 			for (int i = model.getRowCount() - 1; i > -1; i--) {
@@ -357,6 +417,17 @@ public class GUI {
 
 	// vai a tabela da interface grafica buscar a lista para avaliar ou gravar num
 	// ficheiro
+
+	/**
+	 * This method is responsible for checking the DefaultTableModel and get the
+	 * values from the table.
+	 * 
+	 * @param model
+	 *            DefaultTableModel that the values will be from.
+	 * 
+	 * @return ArrayList of Rules.
+	 */
+
 	private ArrayList<Rule> getRulesList(DefaultTableModel model) {
 
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
@@ -370,7 +441,18 @@ public class GUI {
 		return rulesList;
 	}
 
-	// devolve o caminho do ficheiro que for selecionado
+	/**
+	 * This method is responsible for letting the user choose the directory to the
+	 * file.
+	 * 
+	 * @param search1
+	 *            is the button responsible for the search
+	 * 
+	 * @param titleText
+	 *            is the TextField responsible for the showing the path.
+	 * 
+	 * @return String with the path to the file.
+	 */
 	private String getPath(JButton search1, JTextField titleText) {
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new java.io.File("C:/Users"));
@@ -387,7 +469,18 @@ public class GUI {
 
 	}
 
-	// calcular o numero de FP ao percorrer a lista com os emails de ham.log
+	/**
+	 * This method is responsible for calculating the FP in the ham.log.txt file,
+	 * iterates over the listRules given and the hamList
+	 * 
+	 * @param hamList
+	 *            list of Email from the file ham.log.txt
+	 * 
+	 * @param listRules
+	 *            list of Rules from the file rules.cf
+	 * 
+	 * @return integer with the number of FP.
+	 */
 	public int calculateFP(ArrayList<Email> hamList, ArrayList<Rule> listRules) {
 		int fp = 0;
 		for (Email email : hamList) {
@@ -398,7 +491,18 @@ public class GUI {
 		return fp;
 	}
 
-	// calcular o numero de FN ao percorrer a lista com os emails de spam.log
+	/**
+	 * This method is responsible for calculating the FN in the spam.log.txt file,
+	 * iterates over the listRules given and the spamList
+	 * 
+	 * @param hamList
+	 *            list of Email from the file spam.log.txt
+	 * 
+	 * @param listRules
+	 *            list of Rules from the file rules.cf
+	 * 
+	 * @return integer with the number of FN.
+	 */
 	public int calculateFN(ArrayList<Email> spamList, ArrayList<Rule> listRules) {
 		int fn = 0;
 		for (Email email : spamList) {
@@ -408,7 +512,18 @@ public class GUI {
 		return fn;
 	}
 
-	// este metodo vê se está acima ou abaixo de 5
+	/**
+	 * This method is responsible for checking if an Email is Spam or not, checking
+	 * the values of the Rules from each Email from the spam.log or ham.log
+	 * 
+	 * @param rules
+	 *            Array of rules
+	 * 
+	 * @param listRules
+	 *            list of Rules from the file rules.cf
+	 * 
+	 * @return Boolean true is is Spam, false if is not Spam.
+	 */
 	private Boolean isSpam(String[] rules, ArrayList<Rule> listRules) {// começar por melhorar este
 		Double d = 0.0;
 		for (int i = 0; i != rules.length; i++) {
@@ -420,8 +535,6 @@ public class GUI {
 		return false;
 	}
 
-	// este metodo percorre a lista de Regras(classe Rule) e vai buscar o peso de
-	// cada Regra para somar no metodo anterior
 	public Double getPeso(String rule, ArrayList<Rule> listRules) {
 		Double d = 0.0;
 		for (Rule r : listRules) {
@@ -433,7 +546,18 @@ public class GUI {
 		return d;
 	}
 
-	// este método cria um painel dando um botão e um textfield
+	/**
+	 * This method is responsible for creating a JPanel with a button and a
+	 * TextField for the Paths
+	 * 
+	 * @param search
+	 *            Button Search
+	 * 
+	 * @param titleText
+	 *            TextField to show the paths
+	 * 
+	 * @return JPanel
+	 */
 	private JPanel getPanel(JButton search, JTextField titleText) {
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new GridLayout(1, 2));
@@ -444,6 +568,17 @@ public class GUI {
 		return subpanel;
 	}
 
+	/**
+	 * This method is responsible for creating a JPanel with the TextFields of the
+	 * FN and FP and the Labels.
+	 * 
+	 * @param fpText
+	 *            TextField that will have the number of FP
+	 * @param fnText
+	 *            TextField that will have the number of FP
+	 * 
+	 * @return JPanel with the FN and FP TextField
+	 */
 	public JPanel numberOfFakesTextFields(JTextField fpText, JTextField fnText) {
 		JPanel pane = new JPanel();
 		JPanel subpanelFN = new JPanel();
