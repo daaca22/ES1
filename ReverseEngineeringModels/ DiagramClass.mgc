@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="infoStructure.Email" x="645" y="114">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="antiSpamFilter.AntiSpamFilterAutomaticConfiguration"
+        x="992" y="287">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="antiSpamFilter.AntiSpamFilterProblem" x="1190" y="380">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="files.ReadFile"
+            endpointName="rf" kind="Simple"/>
+        <Association destinationClassName="Interface.GUI"
+            endpointName="gui" kind="Simple"/>
+        <Communication destinationClassName="files.ReadFile"/>
+        <Communication destinationClassName="Interface.GUI"/>
+        <Communication destinationClassName="infoStructure.Rule"/>
+    </Class>
+    <Class name="Interface.GUI" x="405" y="343">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="true"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="true"
+            accessors-accepted="true" constructors-accepted="true"/>
+        <Association destinationClassName="infoStructure.Email"
+            endpointName="listSpam" kind="Simple"/>
+        <Association destinationClassName="files.ReadFile"
+            endpointName="rf" kind="Simple"/>
+        <Association destinationClassName="infoStructure.Rule"
+            endpointName="staticRulesList" kind="Simple"/>
+        <Association destinationClassName="infoStructure.Rule"
+            endpointName="listRules" kind="Simple">
+            <Point x="473" y="167"/>
+        </Association>
+        <Association destinationClassName="infoStructure.Email"
+            endpointName="listHam" kind="Simple">
+            <Point x="794" y="142"/>
+        </Association>
+        <Communication destinationClassName="infoStructure.Rule"/>
+    </Class>
+    <Class name="files.ReadFile" x="27" y="345">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="true"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="true"
+            accessors-accepted="true" constructors-accepted="true"/>
+        <Communication destinationClassName="infoStructure.Email"/>
+    </Class>
+    <Class name="infoStructure.Rule" x="313" y="117">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+</ClassDiagram>

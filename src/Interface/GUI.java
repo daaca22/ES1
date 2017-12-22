@@ -323,7 +323,7 @@ public class GUI {
 	 * 
 	 * @return nothing.
 	 */
-	private void generateR() {
+	public void generateR() {
 		String[] params = new String[2];
 
 		params[0] = "/Library/Frameworks/R.framework/Versions/3.4/Resources/Rscript";// caminhos do MAC
@@ -373,7 +373,7 @@ public class GUI {
 	 * 
 	 * @return nothing.
 	 */
-	private void setModelContentManual(ArrayList<Rule> list, DefaultTableModel model) {// passo aqui uma lista de Rules
+	public void setModelContentManual(ArrayList<Rule> list, DefaultTableModel model) {// passo aqui uma lista de Rules
 		clearTable(model);
 		for (int i = 0; i != list.size(); i++) {
 			model.addRow(new Object[] { list.get(i).getRule(), list.get(i).getValue() });
@@ -396,7 +396,7 @@ public class GUI {
 	 * @return nothing.
 	 */
 
-	private void setModelContentAuto(ArrayList<Rule> list, DefaultTableModel model, ArrayList<Double> listD) {
+	public void setModelContentAuto(ArrayList<Rule> list, DefaultTableModel model, ArrayList<Double> listD) {
 		clearTable(model);
 		for (int i = 0; i != list.size(); i++) {
 			model.addRow(new Object[] { list.get(i).getRule(), listD.get(i) });
@@ -411,7 +411,7 @@ public class GUI {
 	 * 
 	 * @return nothing.
 	 */
-	private void clearTable(DefaultTableModel model) {
+	public void clearTable(DefaultTableModel model) {
 		if (model.getRowCount() > 0) {
 			for (int i = model.getRowCount() - 1; i > -1; i--) {
 				model.removeRow(i);
@@ -432,7 +432,7 @@ public class GUI {
 	 * @return ArrayList of Rules.
 	 */
 
-	private ArrayList<Rule> getRulesList(DefaultTableModel model) {
+	public ArrayList<Rule> getRulesList(DefaultTableModel model) {
 
 		ArrayList<Rule> rulesList = new ArrayList<Rule>();
 		for (int count = 0; count < model.getRowCount(); count++) {
@@ -457,7 +457,7 @@ public class GUI {
 	 * 
 	 * @return String with the path to the file.
 	 */
-	private String getPath(JButton search1, JTextField titleText) {
+	public String getPath(JButton search1, JTextField titleText) {
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new java.io.File("C:/Users"));
 		fc.setDialogTitle("File Browser.");
@@ -528,7 +528,7 @@ public class GUI {
 	 * 
 	 * @return Boolean true is is Spam, false if is not Spam.
 	 */
-	private Boolean isSpam(String[] rules, ArrayList<Rule> listRules) {// começar por melhorar este
+	public Boolean isSpam(String[] rules, ArrayList<Rule> listRules) {// começar por melhorar este
 		Double d = 0.0;
 		for (int i = 0; i != rules.length; i++) {
 			d = d + getPeso(rules[i], listRules);
