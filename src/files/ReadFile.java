@@ -143,11 +143,8 @@ public class ReadFile {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
-//			if(isAuto == true) {
-//				fw = new FileWriter("AntiSpamConfigurationForProfessionalMailbox");
-//			}else {
-				fw = new FileWriter(file);
-//			}
+			File f = new File(file);
+			fw = new FileWriter(f);
 			bw = new BufferedWriter(fw);
 
 			for (Rule r : listRules) {
@@ -155,7 +152,7 @@ public class ReadFile {
 				bw.newLine();
 			}
 
-			System.out.println("Done");
+			System.out.println("Written");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -270,6 +267,5 @@ public class ReadFile {
 		}
 		return pesos;
 	}
-	
-	
+
 }
