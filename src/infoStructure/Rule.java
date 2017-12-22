@@ -1,4 +1,4 @@
-package antiSpamFilter;
+package infoStructure;
 
 /**
  * This Class was created to help store the values read from the rules.cf file,

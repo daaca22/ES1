@@ -1,4 +1,4 @@
-package antiSpamFilter;
+package files;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+
+import infoStructure.Email;
+import infoStructure.Rule;
 
 /**
  * This Class handles everything that have something to do with files, this

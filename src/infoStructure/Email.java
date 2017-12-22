@@ -1,4 +1,4 @@
-package antiSpamFilter;
+package infoStructure;
 
 /**
  * This Class was created to help store the rules from each Email read from the

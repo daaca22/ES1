@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import Interface.GUI;
+import files.ReadFile;
+
 public class TestCase {
 
 	@Test

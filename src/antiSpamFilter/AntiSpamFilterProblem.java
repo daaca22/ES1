@@ -6,6 +6,10 @@ import java.util.List;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 
+import Interface.GUI;
+import files.ReadFile;
+import infoStructure.Rule;
+
 public class AntiSpamFilterProblem extends AbstractDoubleProblem {
 
 	private static ReadFile rf = new ReadFile();

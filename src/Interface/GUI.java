@@ -1,4 +1,4 @@
-package antiSpamFilter;
+package Interface;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,6 +24,11 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
+import antiSpamFilter.AntiSpamFilterAutomaticConfiguration;
+import files.ReadFile;
+import infoStructure.Email;
+import infoStructure.Rule;
+
 /**
  * This Class handles everything about the interface, and user interaction.
  * 
@@ -36,7 +41,7 @@ public class GUI {
 	private JFrame frame = new JFrame("Filtro Anti-Spam");
 	private Dimension dimension;
 	private String ham;
-	static String rules;
+	public static String rules;
 	private String spam;
 	private ReadFile rf = new ReadFile();
 
@@ -47,8 +52,8 @@ public class GUI {
 
 	static public ArrayList<Rule> staticRulesList = new ArrayList<Rule>();
 
-	static ArrayList<Email> listHam = new ArrayList<Email>();
-	static ArrayList<Email> listSpam = new ArrayList<Email>();
+	public static ArrayList<Email> listHam = new ArrayList<Email>();
+	public static ArrayList<Email> listSpam = new ArrayList<Email>();
 
 	public GUI() {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -321,7 +326,7 @@ public class GUI {
 	private void generateR() {
 		String[] params = new String[2];
 
-		params[0] = "/Library/Frameworks/R.framework/Versions/3.4/Resources/Rscript";
+		params[0] = "/Library/Frameworks/R.framework/Versions/3.4/Resources/Rscript";// caminhos do MAC
 		params[1] = "/Users/danielcoimbra/git/ES1-2017-EIC2-4/experimentBaseDirectory/AntiSpamStudy/R/HV.Boxplot.R";
 
 		String[] envp = new String[1];
@@ -334,7 +339,6 @@ public class GUI {
 			e1.printStackTrace();
 		}
 	}
-
 	/**
 	 * This method is responsible for generating the Latex pdf using the pdflatex
 	 * command in a given directory and a given file tex.
